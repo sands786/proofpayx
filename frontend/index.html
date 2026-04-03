@@ -3,7 +3,6 @@
 <head>
     <title>ProofPayX — Trustless AI Payments</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Courier New', monospace;
             background: #0a0a0a;
@@ -12,21 +11,16 @@
             margin: 0;
         }
         .container { max-width: 1200px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-        h1 { font-size: 2rem; }
-        .tagline { color: #00ffccaa; margin-top: 0.25rem; }
         button {
             background: #00ffcc;
             color: #0a0a0a;
             border: none;
-            padding: 10px 20px;
-            font-size: 14px;
+            padding: 12px 24px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 8px;
-            font-family: monospace;
         }
-        button:hover { opacity: 0.8; }
         button.danger { background: #ff4444; color: white; }
         input, textarea {
             width: 100%;
@@ -36,25 +30,13 @@
             color: #00ffcc;
             border: 1px solid #00ffcc;
             border-radius: 4px;
-            font-family: monospace;
         }
         .card {
             border: 1px solid #00ffcc;
             padding: 1.5rem;
             margin: 1rem 0;
             border-radius: 12px;
-            background: #0a0a0a;
         }
-        .card h3 { margin-bottom: 1rem; color: #00ffcc; }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .status-connected { background: #00ffcc20; color: #00ffcc; border: 1px solid #00ffcc; }
-        .status-disconnected { background: #ff444420; color: #ff8888; border: 1px solid #ff4444; }
         .agent-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -67,50 +49,30 @@
             border-radius: 8px;
             padding: 1rem;
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .agent-card:hover { border-color: #00ffcc; transform: translateY(-2px); }
-        .agent-name { font-size: 1.2rem; font-weight: bold; }
-        .agent-rep { font-size: 0.8rem; color: #00ffccaa; }
-        .agent-price { font-size: 1rem; margin-top: 0.5rem; color: #00ffcc; }
+        .agent-card:hover { border-color: #00ffcc; }
         .tx-hash {
-            font-family: monospace;
             background: #1a1a1a;
             padding: 8px;
             border-radius: 4px;
             font-size: 12px;
             word-break: break-all;
-            margin: 8px 0;
+            margin-top: 8px;
         }
-        .escrow-item {
-            background: #1a1a1a;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 4px;
-            border-left: 3px solid #00ffcc;
-        }
-        .flex-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-        .wallet-info { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        .address { font-family: monospace; background: #1a1a1a; padding: 8px 12px; border-radius: 8px; }
-        .success { color: #00ffcc; }
-        .error { color: #ff6666; }
-        .warning { color: #ffaa00; }
-        hr { border-color: #00ffcc33; margin: 1rem 0; }
+        .wallet-info { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .status-connected { background: #00ffcc20; color: #00ffcc; padding: 4px 12px; border-radius: 20px; }
+        .status-disconnected { background: #ff444420; color: #ff8888; padding: 4px 12px; border-radius: 20px; }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div>
-            <h1>🔒 ProofPayX</h1>
-            <div class="tagline">Stripe for AI agents — but trustless.</div>
-        </div>
-        <div class="wallet-info" id="walletInfo">
-            <span id="walletStatus" class="status-badge status-disconnected">Disconnected</span>
-            <span id="networkDisplay"></span>
-            <button id="connectBtn">Connect OKX Wallet</button>
-            <button id="disconnectBtn" style="display:none;" class="danger">Disconnect</button>
-        </div>
+    <h1>🔒 ProofPayX</h1>
+    <p>Stripe for AI agents — but trustless.</p>
+    
+    <div class="wallet-info">
+        <span id="walletStatus" class="status-disconnected">Disconnected</span>
+        <button id="connectBtn">Connect OKX Wallet</button>
+        <button id="disconnectBtn" style="display:none;" class="danger">Disconnect</button>
     </div>
     
     <div class="card">
@@ -118,56 +80,47 @@
         <div class="agent-grid">
             <div class="agent-card" data-agent="0x04b772f0cf69f45956061100d14bc5417b9ba3eb" data-price="0.01">
                 <div class="agent-name">📈 ETH Predictor</div>
-                <div class="agent-rep">Reputation: 85% (5 jobs)</div>
                 <div class="agent-price">💰 0.01 OKB</div>
-                <div style="font-size:0.8rem; margin-top:8px;">5-min ETH price prediction with 90%+ confidence</div>
             </div>
             <div class="agent-card" data-agent="0x04b772f0cf69f45956061100d14bc5417b9ba3eb" data-price="0.005">
                 <div class="agent-name">📊 Sentiment Analyst</div>
-                <div class="agent-rep">Reputation: 78% (3 jobs)</div>
                 <div class="agent-price">💰 0.005 OKB</div>
-                <div style="font-size:0.8rem; margin-top:8px;">Real-time market sentiment from news & social</div>
             </div>
             <div class="agent-card" data-agent="0x04b772f0cf69f45956061100d14bc5417b9ba3eb" data-price="0.02">
                 <div class="agent-name">🔒 Code Auditor</div>
-                <div class="agent-rep">Reputation: 92% (2 jobs)</div>
                 <div class="agent-price">💰 0.02 OKB</div>
-                <div style="font-size:0.8rem; margin-top:8px;">Smart contract vulnerability scanner</div>
             </div>
         </div>
     </div>
     
     <div class="card">
         <h3>💰 Create Escrow</h3>
-        <input type="text" id="agentAddress" placeholder="Agent Address (click an agent above to fill)">
+        <input type="text" id="agentAddress" placeholder="Agent Address">
         <input type="number" id="amount" placeholder="Amount (OKB)" step="0.001">
         <input type="number" id="minConfidence" placeholder="Min Confidence %" value="80">
-        <textarea id="resultData" rows="2" placeholder="Describe what you want the agent to deliver (this text will be hashed on-chain)"></textarea>
-        <button id="createBtn">🔒 Lock Payment</button>
+        <textarea id="resultData" rows="2" placeholder="Expected result (this text will be hashed)"></textarea>
+        <button id="createBtn">Lock Payment</button>
         <div id="createResult" class="tx-hash" style="display:none;"></div>
     </div>
     
     <div class="card">
-        <h3>🔓 Verify & Release Payment</h3>
+        <h3>🔓 Verify & Release</h3>
         <input type="number" id="escrowId" placeholder="Escrow ID">
-        <textarea id="actualData" rows="2" placeholder="Actual delivered data (must match the expected result exactly)"></textarea>
+        <textarea id="actualData" rows="2" placeholder="Actual delivered data (must match exactly)"></textarea>
         <input type="number" id="verifyConfidence" placeholder="Confidence %">
-        <button id="verifyBtn">✅ Verify & Release</button>
+        <button id="verifyBtn">Verify & Release</button>
         <div id="verifyResult" class="tx-hash" style="display:none;"></div>
     </div>
     
     <div class="card">
-        <h3>📜 Recent Escrows / Transaction Log</h3>
-        <div id="txLog">
-            <div style="color: #00ffcc55; text-align: center;">No transactions yet. Create an escrow to see logs.</div>
-        </div>
+        <h3>📜 Transaction Log</h3>
+        <div id="txLog">No transactions yet.</div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
 <script>
-    let provider, signer, contract;
-    let currentAddress = null;
+    let contract, signer, currentAddress;
     const CONTRACT_ADDRESS = "0x156C52c25d94956bBf20BE025ACbc55c1A5d56d6";
     
     const contractABI = [
@@ -176,144 +129,75 @@
         "function escrowCounter() view returns (uint256)"
     ];
     
-    const XLAYER_TESTNET = {
-        chainId: "0x7A0",
-        chainName: "X Layer Testnet",
-        nativeCurrency: { name: "OKB", symbol: "OKB", decimals: 18 },
-        rpcUrls: ["https://testrpc.xlayer.tech/terigon"],
-        blockExplorerUrls: ["https://www.okx.com/web3/explorer/xlayer-testnet"]
-    };
-    
-    function addToLog(message, txHash = null, type = 'info') {
+    function log(message, txHash = null) {
         const logDiv = document.getElementById('txLog');
-        const entry = document.createElement('div');
-        entry.className = 'escrow-item';
         const time = new Date().toLocaleTimeString();
-        let content = `[${time}] ${message}`;
-        if (txHash) {
-            const explorerUrl = `https://www.okx.com/web3/explorer/xlayer-testnet/tx/${txHash}`;
-            content += ` <a href="${explorerUrl}" target="_blank" style="color:#00ffcc;">View TX →</a>`;
-        }
-        entry.innerHTML = content;
-        if (type === 'success') entry.style.borderLeftColor = '#00ffcc';
-        else if (type === 'error') entry.style.borderLeftColor = '#ff4444';
-        if (logDiv.firstChild && logDiv.firstChild.innerText.includes('No transactions')) {
-            logDiv.innerHTML = '';
-        }
-        logDiv.prepend(entry);
+        let html = `<div>[${time}] ${message}`;
+        if (txHash) html += ` <a href="https://www.okx.com/web3/explorer/xlayer-testnet/tx/${txHash}" target="_blank">View TX</a>`;
+        html += `</div>`;
+        if (logDiv.innerHTML === 'No transactions yet.') logDiv.innerHTML = '';
+        logDiv.innerHTML = html + logDiv.innerHTML;
         if (logDiv.children.length > 20) logDiv.removeChild(logDiv.lastChild);
     }
     
     function updateUI() {
-        const walletStatus = document.getElementById('walletStatus');
+        const statusSpan = document.getElementById('walletStatus');
         const connectBtn = document.getElementById('connectBtn');
         const disconnectBtn = document.getElementById('disconnectBtn');
-        
         if (currentAddress) {
-            walletStatus.innerHTML = `✅ Connected: ${currentAddress.slice(0,6)}...${currentAddress.slice(-4)}`;
-            walletStatus.className = 'status-badge status-connected';
+            statusSpan.innerHTML = `✅ Connected: ${currentAddress.slice(0,6)}...${currentAddress.slice(-4)}`;
+            statusSpan.className = 'status-connected';
             connectBtn.style.display = 'none';
             disconnectBtn.style.display = 'inline-block';
         } else {
-            walletStatus.innerHTML = 'Disconnected';
-            walletStatus.className = 'status-badge status-disconnected';
+            statusSpan.innerHTML = 'Disconnected';
+            statusSpan.className = 'status-disconnected';
             connectBtn.style.display = 'inline-block';
             disconnectBtn.style.display = 'none';
         }
     }
     
-    async function switchToXLayer(ethProvider) {
-        try {
-            await ethProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: XLAYER_TESTNET.chainId }] });
-            return true;
-        } catch (error) {
-            if (error.code === 4902) {
-                await ethProvider.request({ method: 'wallet_addEthereumChain', params: [XLAYER_TESTNET] });
-                return true;
-            }
-            return false;
-        }
-    }
-    
     document.getElementById('connectBtn').onclick = async () => {
-        console.log("Connect button clicked");
+        alert("Connect button clicked - checking for OKX Wallet...");
         
-        if (typeof ethers === 'undefined') {
-            alert('Error: ethers library not loaded. Refresh the page.');
+        // Check for OKX Wallet
+        if (typeof window.okxwallet === 'undefined' && typeof window.ethereum === 'undefined') {
+            alert('OKX Wallet not installed! Please install OKX Wallet extension.');
             return;
         }
         
-        // Get the correct provider (OKX Wallet or MetaMask)
-        let ethProvider = null;
-        if (window.okxwallet) {
-            ethProvider = window.okxwallet;
-            console.log("OKX Wallet detected");
-        } else if (window.ethereum) {
-            ethProvider = window.ethereum;
-            console.log("Ethereum provider detected");
-        } else {
-            alert('Please install OKX Wallet extension');
-            document.getElementById('walletStatus').innerHTML = '❌ No wallet found. Install OKX Wallet.';
-            return;
-        }
+        const ethProvider = window.okxwallet || window.ethereum;
+        alert("Provider found: " + (window.okxwallet ? "OKX Wallet" : "Ethereum"));
         
         try {
-            // Request account access
             const accounts = await ethProvider.request({ method: 'eth_requestAccounts' });
-            console.log("Accounts:", accounts);
-            
-            // Create ethers provider
-            provider = new ethers.BrowserProvider(ethProvider);
+            alert("Accounts received: " + accounts[0]);
+            const provider = new ethers.BrowserProvider(ethProvider);
             signer = await provider.getSigner();
             currentAddress = await signer.getAddress();
-            
-            // Check network
-            const network = await provider.getNetwork();
-            const chainId = Number(network.chainId);
-            console.log("Chain ID:", chainId);
-            
-            if (chainId !== 1952) {
-                addToLog('Please switch to X Layer Testnet', null, 'warning');
-                const switched = await switchToXLayer(ethProvider);
-                if (switched) {
-                    addToLog('Network switch requested. Please approve in wallet.', null, 'success');
-                    setTimeout(() => window.location.reload(), 3000);
-                    return;
-                } else {
-                    addToLog('Failed to switch network. Please switch manually.', null, 'error');
-                    return;
-                }
-            }
-            
-            // Create contract instance
             contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
-            addToLog(`Wallet connected: ${currentAddress}`, null, 'success');
             updateUI();
-            
+            log(`Wallet connected: ${currentAddress}`);
         } catch (err) {
-            console.error("Connection error:", err);
-            addToLog(`Connection error: ${err.message}`, null, 'error');
-            alert(`Error: ${err.message}`);
+            alert("Error: " + err.message);
+            console.error(err);
         }
     };
     
     document.getElementById('disconnectBtn').onclick = () => {
         currentAddress = null;
-        provider = null;
-        signer = null;
         contract = null;
         updateUI();
-        addToLog('Wallet disconnected', null, 'info');
+        log('Wallet disconnected');
     };
     
-    // Agent card click handler
     document.querySelectorAll('.agent-card').forEach(card => {
-        card.addEventListener('click', () => {
+        card.onclick = () => {
             document.getElementById('agentAddress').value = card.getAttribute('data-agent');
             document.getElementById('amount').value = card.getAttribute('data-price');
             document.getElementById('minConfidence').value = 80;
-            addToLog(`Selected agent: ${card.querySelector('.agent-name').innerText}`, null, 'info');
-        });
+            log(`Selected agent: ${card.querySelector('.agent-name').innerText}`);
+        };
     });
     
     document.getElementById('createBtn').onclick = async () => {
@@ -325,21 +209,21 @@
         if (!agent || !amount || !data) { alert('Fill all fields'); return; }
         const resultDiv = document.getElementById('createResult');
         resultDiv.style.display = 'block';
-        resultDiv.innerHTML = '⏳ Processing transaction...';
+        resultDiv.innerHTML = 'Processing...';
         try {
             const hashlock = ethers.keccak256(ethers.toUtf8Bytes(data));
             const tx = await contract.createEscrow(agent, hashlock, minConf, 3600, { value: ethers.parseEther(amount) });
-            resultDiv.innerHTML = `⏳ Waiting for confirmation... TX: ${tx.hash.slice(0,16)}...`;
+            resultDiv.innerHTML = `Waiting... TX: ${tx.hash.slice(0,16)}...`;
             await tx.wait();
             const counter = await contract.escrowCounter();
             const escrowId = Number(counter) - 1;
             resultDiv.innerHTML = `✅ Escrow #${escrowId} created! TX: ${tx.hash}`;
-            addToLog(`Escrow #${escrowId} created for ${amount} OKB`, tx.hash, 'success');
+            log(`Escrow #${escrowId} created for ${amount} OKB`, tx.hash);
             document.getElementById('escrowId').value = escrowId;
             document.getElementById('resultData').value = '';
         } catch (err) {
             resultDiv.innerHTML = `❌ Error: ${err.message}`;
-            addToLog(`Create failed: ${err.message}`, null, 'error');
+            log(`Create failed: ${err.message}`);
         }
     };
     
@@ -351,24 +235,23 @@
         if (!id || !data || !conf) { alert('Fill all fields'); return; }
         const resultDiv = document.getElementById('verifyResult');
         resultDiv.style.display = 'block';
-        resultDiv.innerHTML = '⏳ Processing verification...';
+        resultDiv.innerHTML = 'Processing...';
         try {
             const proofBytes = ethers.toUtf8Bytes(data);
             const tx = await contract.verifyAndRelease(id, proofBytes, conf);
-            resultDiv.innerHTML = `⏳ Waiting for confirmation... TX: ${tx.hash.slice(0,16)}...`;
+            resultDiv.innerHTML = `Waiting... TX: ${tx.hash.slice(0,16)}...`;
             await tx.wait();
             resultDiv.innerHTML = `✅ Payment released for Escrow #${id}! TX: ${tx.hash}`;
-            addToLog(`Escrow #${id} completed with ${conf}% confidence`, tx.hash, 'success');
+            log(`Escrow #${id} completed with ${conf}% confidence`, tx.hash);
             document.getElementById('actualData').value = '';
             document.getElementById('verifyConfidence').value = '';
         } catch (err) {
             resultDiv.innerHTML = `❌ Error: ${err.message}`;
-            addToLog(`Verification failed: ${err.message}`, null, 'error');
+            log(`Verification failed: ${err.message}`);
         }
     };
     
-    updateUI();
-    addToLog('ProofPayX frontend loaded. Connect your OKX Wallet to start.', null, 'info');
+    log('Frontend loaded. Click Connect OKX Wallet to start.');
 </script>
 </body>
 </html>
