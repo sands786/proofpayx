@@ -26,10 +26,9 @@
             border-radius: 8px;
             font-family: monospace;
         }
-        button:hover { opacity: 0.8; transform: scale(0.98); }
+        button:hover { opacity: 0.8; }
         button.danger { background: #ff4444; color: white; }
-        button.secondary { background: #333; color: #00ffcc; border: 1px solid #00ffcc; }
-        input, textarea, select {
+        input, textarea {
             width: 100%;
             padding: 12px;
             margin: 8px 0 16px;
@@ -209,7 +208,6 @@
         const walletStatus = document.getElementById('walletStatus');
         const connectBtn = document.getElementById('connectBtn');
         const disconnectBtn = document.getElementById('disconnectBtn');
-        const networkDisplay = document.getElementById('networkDisplay');
         
         if (currentAddress) {
             walletStatus.innerHTML = `✅ Connected: ${currentAddress.slice(0,6)}...${currentAddress.slice(-4)}`;
@@ -221,13 +219,10 @@
             walletStatus.className = 'status-badge status-disconnected';
             connectBtn.style.display = 'inline-block';
             disconnectBtn.style.display = 'none';
-            networkDisplay.innerHTML = '';
         }
     }
     
-    async function switchToXLayer() {
-        const ethProvider = window.ethereum || window.okxwallet;
-        if (!ethProvider) return false;
+    async function switchToXLayer(ethProvider) {
         try {
             await ethProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: XLAYER_TESTNET.chainId }] });
             return true;
@@ -241,24 +236,65 @@
     }
     
     document.getElementById('connectBtn').onclick = async () => {
-        if (typeof ethers === 'undefined') { alert('Error: ethers not loaded'); return; }
-        const ethProvider = window.ethereum || window.okxwallet;
-        if (!ethProvider) { alert('Install OKX Wallet'); return; }
+        console.log("Connect button clicked");
+        
+        if (typeof ethers === 'undefined') {
+            alert('Error: ethers library not loaded. Refresh the page.');
+            return;
+        }
+        
+        // Get the correct provider (OKX Wallet or MetaMask)
+        let ethProvider = null;
+        if (window.okxwallet) {
+            ethProvider = window.okxwallet;
+            console.log("OKX Wallet detected");
+        } else if (window.ethereum) {
+            ethProvider = window.ethereum;
+            console.log("Ethereum provider detected");
+        } else {
+            alert('Please install OKX Wallet extension');
+            document.getElementById('walletStatus').innerHTML = '❌ No wallet found. Install OKX Wallet.';
+            return;
+        }
+        
         try {
+            // Request account access
             const accounts = await ethProvider.request({ method: 'eth_requestAccounts' });
+            console.log("Accounts:", accounts);
+            
+            // Create ethers provider
             provider = new ethers.BrowserProvider(ethProvider);
             signer = await provider.getSigner();
             currentAddress = await signer.getAddress();
+            
+            // Check network
             const network = await provider.getNetwork();
-            if (Number(network.chainId) !== 1952) {
-                addToLog('Switching to X Layer Testnet...', null, 'warning');
-                const switched = await switchToXLayer();
-                if (switched) { addToLog('Please reload after network switch', null, 'success'); setTimeout(() => window.location.reload(), 2000); return; }
+            const chainId = Number(network.chainId);
+            console.log("Chain ID:", chainId);
+            
+            if (chainId !== 1952) {
+                addToLog('Please switch to X Layer Testnet', null, 'warning');
+                const switched = await switchToXLayer(ethProvider);
+                if (switched) {
+                    addToLog('Network switch requested. Please approve in wallet.', null, 'success');
+                    setTimeout(() => window.location.reload(), 3000);
+                    return;
+                } else {
+                    addToLog('Failed to switch network. Please switch manually.', null, 'error');
+                    return;
+                }
             }
+            
+            // Create contract instance
             contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
             addToLog(`Wallet connected: ${currentAddress}`, null, 'success');
             updateUI();
-        } catch (err) { addToLog(`Connection error: ${err.message}`, null, 'error'); }
+            
+        } catch (err) {
+            console.error("Connection error:", err);
+            addToLog(`Connection error: ${err.message}`, null, 'error');
+            alert(`Error: ${err.message}`);
+        }
     };
     
     document.getElementById('disconnectBtn').onclick = () => {
@@ -270,6 +306,7 @@
         addToLog('Wallet disconnected', null, 'info');
     };
     
+    // Agent card click handler
     document.querySelectorAll('.agent-card').forEach(card => {
         card.addEventListener('click', () => {
             document.getElementById('agentAddress').value = card.getAttribute('data-agent');
@@ -300,7 +337,10 @@
             addToLog(`Escrow #${escrowId} created for ${amount} OKB`, tx.hash, 'success');
             document.getElementById('escrowId').value = escrowId;
             document.getElementById('resultData').value = '';
-        } catch (err) { resultDiv.innerHTML = `❌ Error: ${err.message}`; addToLog(`Create failed: ${err.message}`, null, 'error'); }
+        } catch (err) {
+            resultDiv.innerHTML = `❌ Error: ${err.message}`;
+            addToLog(`Create failed: ${err.message}`, null, 'error');
+        }
     };
     
     document.getElementById('verifyBtn').onclick = async () => {
@@ -321,11 +361,14 @@
             addToLog(`Escrow #${id} completed with ${conf}% confidence`, tx.hash, 'success');
             document.getElementById('actualData').value = '';
             document.getElementById('verifyConfidence').value = '';
-        } catch (err) { resultDiv.innerHTML = `❌ Error: ${err.message}`; addToLog(`Verification failed: ${err.message}`, null, 'error'); }
+        } catch (err) {
+            resultDiv.innerHTML = `❌ Error: ${err.message}`;
+            addToLog(`Verification failed: ${err.message}`, null, 'error');
+        }
     };
     
     updateUI();
-    addToLog('ProofPayX frontend loaded. Connect your wallet to start.', null, 'info');
+    addToLog('ProofPayX frontend loaded. Connect your OKX Wallet to start.', null, 'info');
 </script>
 </body>
 </html>
