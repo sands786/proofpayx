@@ -75,8 +75,27 @@
     </div>
     
     <div class="card">
-        <h3>🤖 2. Available Agents (with Reputation)</h3>
-        <div id="agentList" class="agent-grid">Loading agents...</div>
+        <h3>🤖 2. Available Agents</h3>
+        <div id="agentList" class="agent-grid">
+            <div class="agent-card" data-agent="0x04b772f0cf69f45956061100d14bc5417b9ba3eb" data-price="0.01">
+                <div class="agent-name">📈 ETH Predictor</div>
+                <div class="agent-rep">Reputation: 85% (5 jobs)</div>
+                <div class="agent-price">💰 0.01 OKB</div>
+                <div style="font-size:0.8rem; margin-top:8px;">5-min ETH price prediction with 90%+ confidence</div>
+            </div>
+            <div class="agent-card" data-agent="0x04b772f0cf69f45956061100d14bc5417b9ba3eb" data-price="0.005">
+                <div class="agent-name">📊 Sentiment Analyst</div>
+                <div class="agent-rep">Reputation: 78% (3 jobs)</div>
+                <div class="agent-price">💰 0.005 OKB</div>
+                <div style="font-size:0.8rem; margin-top:8px;">Real-time market sentiment from news & social</div>
+            </div>
+            <div class="agent-card" data-agent="0x04b772f0cf69f45956061100d14bc5417b9ba3eb" data-price="0.02">
+                <div class="agent-name">🔒 Code Auditor</div>
+                <div class="agent-rep">Reputation: 92% (2 jobs)</div>
+                <div class="agent-price">💰 0.02 OKB</div>
+                <div style="font-size:0.8rem; margin-top:8px;">Smart contract vulnerability scanner</div>
+            </div>
+        </div>
     </div>
     
     <div class="card">
@@ -84,14 +103,14 @@
         <input type="text" id="agentAddress" placeholder="Agent Address (click an agent above to fill)">
         <input type="number" id="amount" placeholder="Amount (OKB)" step="0.001">
         <input type="number" id="confidence" placeholder="Min Confidence %" value="80">
-        <textarea id="resultData" placeholder="Describe what you want the agent to deliver"></textarea>
+        <textarea id="resultData" placeholder="Describe what you want the agent to deliver (this text will be hashed on-chain)"></textarea>
         <button id="createBtn">Lock Payment</button>
     </div>
     
     <div class="card">
         <h3>🔓 4. Agent Verification (Demo)</h3>
         <input type="number" id="escrowId" placeholder="Escrow ID">
-        <textarea id="actualData" placeholder="Actual delivered data"></textarea>
+        <textarea id="actualData" placeholder="Actual delivered data (must match the expected result exactly)"></textarea>
         <input type="number" id="actualConfidence" placeholder="Confidence %">
         <button id="verifyBtn">Verify & Release</button>
     </div>
@@ -100,23 +119,26 @@
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.min.js"></script>
 <script>
     let provider, signer, contract;
-    const CONTRACT_ADDRESS = "0x156C52c25d94956bBf20BE025ACbc55c1A5d56d6"; // Update after mainnet deploy
+    const CONTRACT_ADDRESS = "0x156C52c25d94956bBf20BE025ACbc55c1A5d56d6";
     
     const contractABI = [
         "function createEscrow(address _agent, bytes32 _hashlock, uint8 _minConfidence, uint256 _durationSeconds) external payable returns (uint256)",
-        "function verifyAndRelease(uint256 _id, bytes32 _proof, uint8 _confidence) external",
-        "function getReputation(address agent) view returns (uint256, uint256, uint256)",
+        "function verifyAndRelease(uint256 _id, bytes memory _proof, uint8 _confidence) external",
         "event EscrowCreated(uint256 id, address payer, address agent, uint256 amount, bytes32 hashlock, uint8 minConfidence)",
         "event Released(uint256 id, address agent, uint256 amount)"
     ];
     
-    // Marketplace agents (in real app, fetch from registry)
-    const marketplaceAgents = [
-        { address: "0x742d35Cc6634C0532925a3b844Bc9e7595f6b6cc", name: "ETH Predictor", price: 0.01, description: "5-min ETH price prediction with 90%+ confidence" },
-        { address: "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2db", name: "Sentiment Analyst", price: 0.005, description: "Real-time market sentiment from news & social" },
-        { address: "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B", name: "Code Auditor", price: 0.02, description: "Smart contract vulnerability scanner" },
-        { address: "0xYourAgentAddress", name: "Your Custom Agent", price: 0.008, description: "Add any agent here" }
-    ];
+    // Agent card click handler
+    document.querySelectorAll('.agent-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const agentAddress = card.getAttribute('data-agent');
+            const price = card.getAttribute('data-price');
+            document.getElementById('agentAddress').value = agentAddress;
+            document.getElementById('amount').value = price;
+            document.getElementById('confidence').value = 80;
+            alert('Agent selected! Fill in the expected result and lock payment.');
+        });
+    });
     
     document.getElementById('connectBtn').onclick = async () => {
         if (window.ethereum) {
@@ -125,41 +147,15 @@
             signer = await provider.getSigner();
             contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
             const address = await signer.getAddress();
-            document.getElementById('walletAddress').innerHTML = `Connected: ${address}`;
-            loadMarketplace();
+            document.getElementById('walletAddress').innerHTML = `✅ Connected: ${address.slice(0,6)}...${address.slice(-4)}`;
+            alert('Wallet connected! Make sure you are on X Layer testnet.');
         } else {
             alert('Please install OKX Wallet extension');
         }
     };
     
-    async function loadMarketplace() {
-        const container = document.getElementById('agentList');
-        container.innerHTML = '';
-        for (const agent of marketplaceAgents) {
-            let repText = 'Unknown';
-            try {
-                const rep = await contract.getReputation(agent.address);
-                repText = `${rep[0]}% (${rep[1]} jobs) | Earned: ${ethers.formatEther(rep[2])} OKB`;
-            } catch(e) { console.log('No reputation yet'); }
-            
-            const card = document.createElement('div');
-            card.className = 'agent-card';
-            card.innerHTML = `
-                <div class="agent-name">${agent.name}</div>
-                <div class="agent-rep">Reputation: ${repText}</div>
-                <div class="agent-price">💰 ${agent.price} OKB</div>
-                <div style="font-size:0.8rem; margin-top:8px;">${agent.description}</div>
-            `;
-            card.onclick = () => {
-                document.getElementById('agentAddress').value = agent.address;
-                document.getElementById('amount').value = agent.price;
-                alert(`Selected ${agent.name}. Fill in the expected result and lock payment.`);
-            };
-            container.appendChild(card);
-        }
-    }
-    
     document.getElementById('createBtn').onclick = async () => {
+        if (!contract) { alert('Connect wallet first'); return; }
         const agent = document.getElementById('agentAddress').value;
         const amount = document.getElementById('amount').value;
         const minConf = document.getElementById('confidence').value;
@@ -170,18 +166,19 @@
             value: ethers.parseEther(amount)
         });
         await tx.wait();
-        alert('Escrow created! Check explorer.');
+        alert('✅ Escrow created! Check the explorer.');
     };
     
     document.getElementById('verifyBtn').onclick = async () => {
+        if (!contract) { alert('Connect wallet first'); return; }
         const id = document.getElementById('escrowId').value;
         const data = document.getElementById('actualData').value;
         const conf = document.getElementById('actualConfidence').value;
         if (!id || !data || !conf) { alert('Fill all fields'); return; }
-        const proofHash = ethers.keccak256(ethers.toUtf8Bytes(data));
-        const tx = await contract.verifyAndRelease(id, proofHash, conf);
+        const proofBytes = ethers.toUtf8Bytes(data);
+        const tx = await contract.verifyAndRelease(id, proofBytes, conf);
         await tx.wait();
-        alert('Payment released!');
+        alert('✅ Payment released!');
     };
 </script>
 </body>
