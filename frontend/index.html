@@ -64,6 +64,7 @@
         .agent-price { font-size: 1rem; margin-top: 0.5rem; }
         .error { color: #ff6666; }
         .success { color: #00ffcc; }
+        .warning { color: #ffaa00; }
     </style>
 </head>
 <body>
@@ -122,17 +123,58 @@
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
 <script>
-    // Wait for ethers to load
     window.addEventListener('load', function() {
-        console.log("Page loaded, ethers version:", typeof ethers);
-        
         let provider, signer, contract;
         const CONTRACT_ADDRESS = "0x156C52c25d94956bBf20BE025ACbc55c1A5d56d6";
+        
+        // X Layer Testnet configuration
+        const XLAYER_TESTNET = {
+            chainId: "0x7A0", // 1952 in hex
+            chainName: "X Layer Testnet",
+            nativeCurrency: {
+                name: "OKB",
+                symbol: "OKB",
+                decimals: 18
+            },
+            rpcUrls: ["https://testrpc.xlayer.tech/terigon"],
+            blockExplorerUrls: ["https://www.okx.com/web3/explorer/xlayer-testnet"]
+        };
         
         const contractABI = [
             "function createEscrow(address _agent, bytes32 _hashlock, uint8 _minConfidence, uint256 _durationSeconds) external payable returns (uint256)",
             "function verifyAndRelease(uint256 _id, bytes memory _proof, uint8 _confidence) external"
         ];
+        
+        // Switch network function
+        async function switchToXLayer() {
+            const provider = getProvider();
+            if (!provider) return false;
+            
+            try {
+                // Try to switch to X Layer testnet
+                await provider.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: XLAYER_TESTNET.chainId }]
+                });
+                return true;
+            } catch (switchError) {
+                // If network doesn't exist, add it
+                if (switchError.code === 4902) {
+                    try {
+                        await provider.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [XLAYER_TESTNET]
+                        });
+                        return true;
+                    } catch (addError) {
+                        console.error("Failed to add network:", addError);
+                        return false;
+                    }
+                }
+                console.error("Switch error:", switchError);
+                return false;
+            }
+        }
         
         // Agent card click handler
         document.querySelectorAll('.agent-card').forEach(card => {
@@ -146,12 +188,10 @@
             });
         });
         
-        // Check if OKX Wallet is installed
-        function isOKXWalletInstalled() {
+        function isWalletInstalled() {
             return typeof window !== 'undefined' && (window.ethereum || window.okxwallet);
         }
         
-        // Get the correct provider
         function getProvider() {
             if (window.okxwallet) return window.okxwallet;
             if (window.ethereum) return window.ethereum;
@@ -159,16 +199,12 @@
         }
         
         document.getElementById('connectBtn').onclick = async () => {
-            console.log("Connect button clicked");
-            
-            // Check if ethers is loaded
             if (typeof ethers === 'undefined') {
                 document.getElementById('walletAddress').innerHTML = '❌ Error: ethers library not loaded. Refresh the page.';
                 return;
             }
             
-            // Check if OKX Wallet is installed
-            if (!isOKXWalletInstalled()) {
+            if (!isWalletInstalled()) {
                 document.getElementById('walletAddress').innerHTML = '❌ OKX Wallet not installed. <a href="https://www.okx.com/web3" target="_blank">Install OKX Wallet</a>';
                 return;
             }
@@ -178,30 +214,40 @@
             try {
                 // Request account access
                 const accounts = await ethProvider.request({ method: 'eth_requestAccounts' });
-                console.log("Accounts:", accounts);
                 
                 // Create ethers provider
                 provider = new ethers.BrowserProvider(ethProvider);
                 signer = await provider.getSigner();
                 const address = await signer.getAddress();
                 
-                // Create contract instance
-                contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
-                
-                // Get network
+                // Check current network
                 const network = await provider.getNetwork();
                 const chainId = Number(network.chainId);
                 
-                document.getElementById('walletAddress').innerHTML = `✅ Connected: ${address.slice(0,6)}...${address.slice(-4)}`;
-                
-                // Check if on correct network (X Layer testnet chainId: 1952)
                 if (chainId !== 1952) {
-                    document.getElementById('networkStatus').innerHTML = '⚠️ Please switch to X Layer Testnet (Chain ID: 1952) in your OKX Wallet';
-                    document.getElementById('networkStatus').style.color = '#ffaa00';
-                } else {
-                    document.getElementById('networkStatus').innerHTML = '✅ Connected to X Layer Testnet';
-                    document.getElementById('networkStatus').style.color = '#00ffcc';
+                    document.getElementById('networkStatus').innerHTML = '⚠️ Switching to X Layer Testnet...';
+                    document.getElementById('networkStatus').className = 'warning';
+                    
+                    // Automatically switch network
+                    const switched = await switchToXLayer();
+                    if (switched) {
+                        document.getElementById('networkStatus').innerHTML = '✅ Please approve network switch in your wallet. Reload the page after switch.';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                        return;
+                    } else {
+                        document.getElementById('networkStatus').innerHTML = '❌ Failed to switch network. Please manually switch to X Layer Testnet (Chain ID: 1952) in your wallet.';
+                        return;
+                    }
                 }
+                
+                // Create contract instance
+                contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
+                
+                document.getElementById('walletAddress').innerHTML = `✅ Connected: ${address.slice(0,6)}...${address.slice(-4)}`;
+                document.getElementById('networkStatus').innerHTML = '✅ Connected to X Layer Testnet';
+                document.getElementById('networkStatus').className = 'success';
                 
                 alert('Wallet connected successfully!');
             } catch (error) {
