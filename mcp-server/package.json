@@ -1,0 +1,10 @@
+{
+  "name": "proofpayx-mcp",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "ethers": "^6.4.0",
+    "dotenv": "^16.0.0"
+  }
+}
