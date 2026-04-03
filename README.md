@@ -59,3 +59,9 @@ Solo developer — built in 12 days
 ## 📄 License
 
 MIT
+
+## Demo
+```bash
+node test-final-working.js
+```
+This creates an escrow and releases payment automatically.
