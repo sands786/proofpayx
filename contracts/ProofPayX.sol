@@ -27,7 +27,7 @@ contract ProofPayX {
     address public resolver;
 
     event EscrowCreated(uint256 id, address payer, address agent, uint256 amount, bytes32 hashlock, uint8 minConfidence);
-    event Verified(uint256 id, uint8 confidence, bytes32 proof);
+    event Verified(uint256 id, uint8 confidence, bytes32 proofHash);
     event Released(uint256 id, address agent, uint256 amount);
     event Refunded(uint256 id, address payer, uint256 amount);
     event Disputed(uint256 id, address payer);
@@ -66,30 +66,31 @@ contract ProofPayX {
         return id;
     }
 
-    function verifyAndRelease(uint256 _id, bytes32 _proof, uint8 _confidence) external {
+    // Fixed: accepts bytes memory (the original data)
+    function verifyAndRelease(uint256 _id, bytes memory _proof, uint8 _confidence) external {
         Escrow storage e = escrows[_id];
         require(msg.sender == e.agent, "Only agent");
         require(!e.released && !e.refunded && !e.disputed, "Active escrow only");
         require(_confidence >= e.minConfidence, "Confidence too low");
-        require(keccak256(abi.encodePacked(_proof)) == e.hashlock, "Invalid proof");
+        require(keccak256(_proof) == e.hashlock, "Invalid proof");
         
         e.actualConfidence = _confidence;
         e.progress = 100;
         e.released = true;
         
         uint256 payout = (e.amount * _confidence) / 100;
-        uint256 refund = e.amount - payout;
+        uint256 refundAmount = e.amount - payout;
         
         payable(e.agent).transfer(payout);
-        if (refund > 0) payable(e.payer).transfer(refund);
+        if (refundAmount > 0) payable(e.payer).transfer(refundAmount);
         
         totalJobs[e.agent]++;
         totalConfidence[e.agent] += _confidence;
         totalPayout[e.agent] += payout;
         
-        emit Verified(_id, _confidence, _proof);
+        emit Verified(_id, _confidence, keccak256(_proof));
         emit Released(_id, e.agent, payout);
-        if (refund > 0) emit Refunded(_id, e.payer, refund);
+        if (refundAmount > 0) emit Refunded(_id, e.payer, refundAmount);
     }
 
     function dispute(uint256 _id) external {

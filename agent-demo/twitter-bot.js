@@ -2,6 +2,7 @@ const { TwitterApi } = require("twitter-api-v2");
 const { ethers } = require("ethers");
 require("dotenv").config();
 
+// Twitter client
 const twitterClient = new TwitterApi({
   appKey: process.env.TWITTER_API_KEY,
   appSecret: process.env.TWITTER_API_SECRET,
@@ -9,15 +10,20 @@ const twitterClient = new TwitterApi({
   accessSecret: process.env.TWITTER_ACCESS_SECRET,
 });
 
-const provider = new ethers.JsonRpcProvider("https://testrpc.xlayer.tech");
-const CONTRACT_ADDRESS = "0x5614861505566C2c1d260952255cC698C1722251";
+const XLAYER_RPC = "https://testrpc.xlayer.tech";
+const CONTRACT_ADDRESS = "0x156C52c25d94956bBf20BE025ACbc55c1A5d56d6";
+const provider = new ethers.JsonRpcProvider(XLAYER_RPC);
 
+// ABI for events
 const contractABI = [
   "event EscrowCreated(uint256 id, address payer, address agent, uint256 amount, bytes32 hashlock, uint8 minConfidence)",
   "event Released(uint256 id, address agent, uint256 amount)"
 ];
 
 const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, provider);
+
+// Track last processed block
+let lastBlock = 0;
 
 async function postTweet(content) {
   try {
@@ -28,28 +34,45 @@ async function postTweet(content) {
   }
 }
 
-contract.on("EscrowCreated", async (id, payer, agent, amount, hashlock, minConfidence) => {
-  const ethAmount = ethers.formatEther(amount);
-  const tweet = `🔒 New escrow created on @X_Layer!
+async function checkForEvents() {
+  try {
+    const currentBlock = await provider.getBlockNumber();
+    if (lastBlock === 0) {
+      lastBlock = currentBlock - 10; // Look back 10 blocks on first run
+      if (lastBlock < 0) lastBlock = 0;
+    }
+    if (currentBlock <= lastBlock) return;
 
-ID: ${id}
-Amount: ${ethAmount} OKB
-Min confidence: ${minConfidence}%
+    // Get events from lastBlock to currentBlock
+    const createdEvents = await contract.queryFilter("EscrowCreated", lastBlock, currentBlock);
+    const releasedEvents = await contract.queryFilter("Released", lastBlock, currentBlock);
 
-Trustless AI payments with ProofPayX.
-#OKXBuildX #ProofPayX #XLayer`;
-  await postTweet(tweet);
-});
+    for (const event of createdEvents) {
+      const { id, payer, agent, amount, minConfidence } = event.args;
+      const ethAmount = ethers.formatEther(amount);
+      const thread = [
+        `🔒 Escrow #${id} created on @X_Layer!\n\nAmount: ${ethAmount} OKB\nMin confidence: ${minConfidence}%\n\nTrustless AI commerce is live. #ProofPayX #OKXBuildX`,
+        `Funds locked. Agent will deliver verifiable result. Payment auto-releases based on confidence. No middlemen. Just math.`
+      ];
+      for (const tweet of thread) await postTweet(tweet);
+    }
 
-contract.on("Released", async (id, agent, amount) => {
-  const ethAmount = ethers.formatEther(amount);
-  const tweet = `✅ Payment released! Escrow ${id} completed.
+    for (const event of releasedEvents) {
+      const { id, agent, amount } = event.args;
+      const ethAmount = ethers.formatEther(amount);
+      const thread = [
+        `✅ Escrow #${id} COMPLETED!\n\nAgent ${agent.slice(0,6)}...${agent.slice(-4)} earned ${ethAmount} OKB\n\nProof delivered. Confidence verified. Payment released.`,
+        `This is the future of AI agent commerce. No disputes. No delays. Just cryptographic proof.\n\n#ProofPayX #OKXBuildX`
+      ];
+      for (const tweet of thread) await postTweet(tweet);
+    }
 
-Agent earned ${ethAmount} OKB.
+    lastBlock = currentBlock;
+  } catch (error) {
+    console.error("Polling error:", error);
+  }
+}
 
-ProofPayX — Stripe for AI agents, but trustless.
-#OKXBuildX #ProofPayX`;
-  await postTweet(tweet);
-});
-
-console.log("🐦 Twitter bot listening for escrow events...");
+// Poll every 15 seconds
+setInterval(checkForEvents, 15000);
+console.log("🐦 ProofPayX Twitter bot running (polling mode)");
