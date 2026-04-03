@@ -21,6 +21,7 @@
             cursor: pointer;
             border-radius: 8px;
         }
+        button:hover { opacity: 0.8; }
         input, textarea {
             width: 100%;
             padding: 12px;
@@ -61,6 +62,8 @@
         .agent-name { font-size: 1.2rem; font-weight: bold; }
         .agent-rep { font-size: 0.8rem; color: #00ffccaa; }
         .agent-price { font-size: 1rem; margin-top: 0.5rem; }
+        .error { color: #ff6666; }
+        .success { color: #00ffcc; }
     </style>
 </head>
 <body>
@@ -71,7 +74,9 @@
     <div class="card">
         <h3>📡 1. Connect Wallet</h3>
         <button id="connectBtn">Connect OKX Wallet</button>
+        <button id="installBtn" style="display:none; background:#666;">Install OKX Wallet</button>
         <p id="walletAddress" class="status"></p>
+        <p id="networkStatus" class="status"></p>
     </div>
     
     <div class="card">
@@ -123,9 +128,7 @@
     
     const contractABI = [
         "function createEscrow(address _agent, bytes32 _hashlock, uint8 _minConfidence, uint256 _durationSeconds) external payable returns (uint256)",
-        "function verifyAndRelease(uint256 _id, bytes memory _proof, uint8 _confidence) external",
-        "event EscrowCreated(uint256 id, address payer, address agent, uint256 amount, bytes32 hashlock, uint8 minConfidence)",
-        "event Released(uint256 id, address agent, uint256 amount)"
+        "function verifyAndRelease(uint256 _id, bytes memory _proof, uint8 _confidence) external"
     ];
     
     // Agent card click handler
@@ -140,17 +143,65 @@
         });
     });
     
+    // Check if OKX Wallet is installed
+    function isOKXWalletInstalled() {
+        return typeof window !== 'undefined' && (window.ethereum || window.okxwallet);
+    }
+    
+    // Get the correct provider
+    function getProvider() {
+        if (window.okxwallet) return window.okxwallet;
+        if (window.ethereum) return window.ethereum;
+        return null;
+    }
+    
     document.getElementById('connectBtn').onclick = async () => {
-        if (window.ethereum) {
-            provider = new ethers.BrowserProvider(window.ethereum);
-            await provider.send('eth_requestAccounts', []);
+        console.log("Connect button clicked");
+        
+        // Check if OKX Wallet is installed
+        if (!isOKXWalletInstalled()) {
+            document.getElementById('installBtn').style.display = 'inline-block';
+            document.getElementById('installBtn').onclick = () => {
+                window.open('https://www.okx.com/web3', '_blank');
+            };
+            document.getElementById('walletAddress').innerHTML = '❌ OKX Wallet not installed. <a href="https://www.okx.com/web3" target="_blank">Install OKX Wallet</a>';
+            return;
+        }
+        
+        const ethProvider = getProvider();
+        
+        try {
+            // Request account access
+            const accounts = await ethProvider.request({ method: 'eth_requestAccounts' });
+            console.log("Accounts:", accounts);
+            
+            // Create ethers provider
+            provider = new ethers.BrowserProvider(ethProvider);
             signer = await provider.getSigner();
-            contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
             const address = await signer.getAddress();
+            
+            // Create contract instance
+            contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
+            
+            // Get network
+            const network = await provider.getNetwork();
+            const chainId = Number(network.chainId);
+            
             document.getElementById('walletAddress').innerHTML = `✅ Connected: ${address.slice(0,6)}...${address.slice(-4)}`;
-            alert('Wallet connected! Make sure you are on X Layer testnet.');
-        } else {
-            alert('Please install OKX Wallet extension');
+            
+            // Check if on correct network (X Layer testnet chainId: 1952)
+            if (chainId !== 1952) {
+                document.getElementById('networkStatus').innerHTML = '⚠️ Please switch to X Layer Testnet (Chain ID: 1952) in your OKX Wallet';
+                document.getElementById('networkStatus').style.color = '#ffaa00';
+            } else {
+                document.getElementById('networkStatus').innerHTML = '✅ Connected to X Layer Testnet';
+                document.getElementById('networkStatus').style.color = '#00ffcc';
+            }
+            
+            alert('Wallet connected successfully!');
+        } catch (error) {
+            console.error("Connection error:", error);
+            document.getElementById('walletAddress').innerHTML = `❌ Error: ${error.message}`;
         }
     };
     
@@ -161,12 +212,16 @@
         const minConf = document.getElementById('confidence').value;
         const data = document.getElementById('resultData').value;
         if (!agent || !amount || !data) { alert('Fill all fields'); return; }
-        const hashlock = ethers.keccak256(ethers.toUtf8Bytes(data));
-        const tx = await contract.createEscrow(agent, hashlock, minConf, 3600, {
-            value: ethers.parseEther(amount)
-        });
-        await tx.wait();
-        alert('✅ Escrow created! Check the explorer.');
+        try {
+            const hashlock = ethers.keccak256(ethers.toUtf8Bytes(data));
+            const tx = await contract.createEscrow(agent, hashlock, minConf, 3600, {
+                value: ethers.parseEther(amount)
+            });
+            await tx.wait();
+            alert('✅ Escrow created! TX: ' + tx.hash.slice(0,10) + '...');
+        } catch (err) {
+            alert('❌ Error: ' + err.message);
+        }
     };
     
     document.getElementById('verifyBtn').onclick = async () => {
@@ -175,10 +230,14 @@
         const data = document.getElementById('actualData').value;
         const conf = document.getElementById('actualConfidence').value;
         if (!id || !data || !conf) { alert('Fill all fields'); return; }
-        const proofBytes = ethers.toUtf8Bytes(data);
-        const tx = await contract.verifyAndRelease(id, proofBytes, conf);
-        await tx.wait();
-        alert('✅ Payment released!');
+        try {
+            const proofBytes = ethers.toUtf8Bytes(data);
+            const tx = await contract.verifyAndRelease(id, proofBytes, conf);
+            await tx.wait();
+            alert('✅ Payment released! TX: ' + tx.hash.slice(0,10) + '...');
+        } catch (err) {
+            alert('❌ Error: ' + err.message);
+        }
     };
 </script>
 </body>
