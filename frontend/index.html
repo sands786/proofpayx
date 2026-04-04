@@ -20,15 +20,36 @@
             --green: #10b981;
             --red: #ef4444;
             --amber: #f59e0b;
-            --surface: rgba(15,15,20,0.9);
-            --surface-2: rgba(24,24,32,0.85);
             --surface-3: rgba(32,32,44,0.6);
             --border: rgba(255,255,255,0.07);
-            --border-hover: rgba(34,211,238,0.35);
             --text-1: #f1f5f9;
             --text-2: #94a3b8;
             --text-3: #475569;
             --bg: #06070d;
+            --card-bg: rgba(18,18,26,0.95);
+            --input-bg: rgba(0,0,0,0.4);
+            --input-border: rgba(255,255,255,0.08);
+            --log-bg: rgba(0,0,0,0.35);
+            --toast-bg: rgba(10,10,18,0.98);
+            --agent-bg: rgba(32,32,44,0.6);
+            --history-badge-bg: rgba(255,255,255,0.05);
+        }
+
+        .light {
+            --border: rgba(0,0,0,0.08);
+            --text-1: #0f172a;
+            --text-2: #475569;
+            --text-3: #94a3b8;
+            --bg: #f0f4ff;
+            --card-bg: rgba(255,255,255,0.92);
+            --input-bg: rgba(255,255,255,0.8);
+            --input-border: rgba(0,0,0,0.1);
+            --log-bg: rgba(248,250,252,0.9);
+            --toast-bg: rgba(255,255,255,0.98);
+            --agent-bg: rgba(241,245,249,0.8);
+            --surface-3: rgba(241,245,249,0.8);
+            --cyan-dim: rgba(34,211,238,0.08);
+            --history-badge-bg: rgba(0,0,0,0.04);
         }
 
         body {
@@ -37,407 +58,388 @@
             color: var(--text-1);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* ── Aurora ── */
         .aurora {
             position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+            will-change: transform; transition: opacity 0.4s ease;
         }
-
-        /* Moving aurora strip — the main animated background effect */
+        .light .aurora { opacity: 0.15; }
         .aurora-strip {
-            position: absolute;
-            inset: -10px;
-            opacity: 0.55;
-            filter: blur(12px);
+            position: absolute; inset: -10px; opacity: 0.5; filter: blur(8px);
             background-image:
                 repeating-linear-gradient(100deg, #06070d 0%, #06070d 7%, transparent 10%, transparent 12%, #06070d 16%),
                 repeating-linear-gradient(100deg, #1d4ed8 10%, #a5b4fc 15%, #93c5fd 20%, #ddd6fe 25%, #60a5fa 30%);
             background-size: 300%, 200%;
             background-position: 50% 50%, 50% 50%;
+            will-change: background-position;
             animation: aurora-move 60s linear infinite;
         }
-        .aurora-strip::after {
-            content: '';
-            position: absolute; inset: 0;
-            background-image:
-                repeating-linear-gradient(100deg, #06070d 0%, #06070d 7%, transparent 10%, transparent 12%, #06070d 16%),
-                repeating-linear-gradient(100deg, #1d4ed8 10%, #a5b4fc 15%, #93c5fd 20%, #ddd6fe 25%, #60a5fa 30%);
-            background-size: 200%, 100%;
-            background-attachment: fixed;
-            mix-blend-mode: difference;
-            animation: aurora-move 60s linear infinite;
-        }
-        .aurora-mask {
-            position: absolute; inset: 0;
-            background: radial-gradient(ellipse at 80% 10%, transparent 20%, #06070d 75%);
-        }
-
-        /* Soft glowing blobs underneath */
+        .aurora-mask { position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 10%, transparent 20%, #06070d 75%); }
         .aurora-blob {
-            position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.22;
-            animation: drift 18s ease-in-out infinite alternate;
+            position: absolute; border-radius: 50%;
+            filter: blur(55px); opacity: 0.25; will-change: transform;
+            animation: drift 20s ease-in-out infinite alternate;
         }
-        .aurora-blob:nth-child(1) { width: 650px; height: 650px; background: #1d4ed8; top: -220px; left: -120px; animation-delay: 0s; }
-        .aurora-blob:nth-child(2) { width: 520px; height: 520px; background: #0e7490; top: 80px; right: -120px; animation-delay: -6s; }
-        .aurora-blob:nth-child(3) { width: 420px; height: 420px; background: #6d28d9; bottom: -80px; left: 32%; animation-delay: -12s; }
-
-        @keyframes aurora-move {
-            from { background-position: 50% 50%, 50% 50%; }
-            to   { background-position: 350% 50%, 350% 50%; }
-        }
-        @keyframes drift {
-            from { transform: translate(0, 0) scale(1); }
-            to   { transform: translate(45px, 35px) scale(1.1); }
-        }
-
-        /* grid dots overlay */
-        body::before {
-            content: '';
-            position: fixed; inset: 0; z-index: 1; pointer-events: none;
-            background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+        .aurora-blob:nth-child(1) { width: 550px; height: 550px; background: #1d4ed8; top: -180px; left: -100px; }
+        .aurora-blob:nth-child(2) { width: 440px; height: 440px; background: #0e7490; top: 60px; right: -100px; animation-delay: -7s; }
+        .aurora-blob:nth-child(3) { width: 360px; height: 360px; background: #6d28d9; bottom: -60px; left: 30%; animation-delay: -14s; }
+        .aurora::after {
+            content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
             background-size: 28px 28px;
         }
+        @keyframes aurora-move { from { background-position: 50% 50%, 50% 50%; } to { background-position: 350% 50%, 350% 50%; } }
+        @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(40px,30px) scale(1.08); } }
 
-        /* ── Layout ── */
-        /* ── Splash screen ── */
         .splash {
             position: fixed; inset: 0; z-index: 100;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #06070d;
+            display: flex; align-items: center; justify-content: center;
+            background: #06070d; overflow: hidden; pointer-events: none;
             animation: splash-exit 0.8s cubic-bezier(0.4,0,0.2,1) 3.8s both;
-            pointer-events: none;
-            overflow: hidden;
         }
         .splash-aurora {
-            position: absolute; inset: -10px; opacity: 0.55; filter: blur(12px);
+            position: absolute; inset: -10px; opacity: 0.5; filter: blur(8px);
             background-image:
-                repeating-linear-gradient(100deg, #06070d 0%, #06070d 7%, transparent 10%, transparent 12%, #06070d 16%),
-                repeating-linear-gradient(100deg, #1d4ed8 10%, #a5b4fc 15%, #93c5fd 20%, #ddd6fe 25%, #60a5fa 30%);
-            background-size: 300%, 200%;
-            animation: aurora-move 60s linear infinite;
+                repeating-linear-gradient(100deg,#06070d 0%,#06070d 7%,transparent 10%,transparent 12%,#06070d 16%),
+                repeating-linear-gradient(100deg,#1d4ed8 10%,#a5b4fc 15%,#93c5fd 20%,#ddd6fe 25%,#60a5fa 30%);
+            background-size: 300%,200%; will-change: background-position; animation: aurora-move 60s linear infinite;
         }
-        .splash-aurora::after {
-            content: ''; position: absolute; inset: 0;
-            background-image:
-                repeating-linear-gradient(100deg, #06070d 0%, #06070d 7%, transparent 10%, transparent 12%, #06070d 16%),
-                repeating-linear-gradient(100deg, #1d4ed8 10%, #a5b4fc 15%, #93c5fd 20%, #ddd6fe 25%, #60a5fa 30%);
-            background-size: 200%, 100%; background-attachment: fixed;
-            mix-blend-mode: difference; animation: aurora-move 60s linear infinite;
-        }
-        .splash-blob-1 { position: absolute; width: 650px; height: 650px; background: #1d4ed8; border-radius: 50%; filter: blur(90px); opacity: 0.22; top: -220px; left: -120px; animation: drift 18s ease-in-out infinite alternate; }
-        .splash-blob-2 { position: absolute; width: 520px; height: 520px; background: #0e7490; border-radius: 50%; filter: blur(90px); opacity: 0.22; top: 80px; right: -120px; animation: drift 18s ease-in-out infinite alternate; animation-delay: -6s; }
-        .splash-blob-3 { position: absolute; width: 420px; height: 420px; background: #6d28d9; border-radius: 50%; filter: blur(90px); opacity: 0.22; bottom: -80px; left: 32%; animation: drift 18s ease-in-out infinite alternate; animation-delay: -12s; }
-        .splash-mask-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 10%, transparent 20%, #06070d 75%); }
-        .splash-dots { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 28px 28px; }
-
-        .splash-content {
-            position: relative; z-index: 10;
-            display: flex; flex-direction: column; align-items: center; gap: 1.2rem; text-align: center;
-        }
-        .splash-logo {
-            opacity: 0; transform: scale(0.5);
-            animation: splash-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
-        }
+        .splash-blob-1,.splash-blob-2,.splash-blob-3 { position: absolute; border-radius: 50%; filter: blur(55px); opacity: 0.25; will-change: transform; animation: drift 20s ease-in-out infinite alternate; }
+        .splash-blob-1 { width:550px;height:550px;background:#1d4ed8;top:-180px;left:-100px; }
+        .splash-blob-2 { width:440px;height:440px;background:#0e7490;top:60px;right:-100px;animation-delay:-7s; }
+        .splash-blob-3 { width:360px;height:360px;background:#6d28d9;bottom:-60px;left:30%;animation-delay:-14s; }
+        .splash-mask { position:absolute;inset:0;background:radial-gradient(ellipse at 80% 10%,transparent 20%,#06070d 75%); }
+        .splash-dots { position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:28px 28px; }
+        .splash-content { position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:1.2rem;text-align:center;padding:0 1.5rem; }
+        .splash-logo { opacity:0;transform:scale(0.5);animation:splash-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.3s both; }
         .splash-badge {
-            width: 92px; height: 92px; border-radius: 26px;
-            background: linear-gradient(135deg, rgba(34,211,238,0.14), rgba(59,130,246,0.14));
-            border: 1.5px solid rgba(34,211,238,0.38);
-            display: flex; align-items: center; justify-content: center;
-            animation: badge-pulse 2.2s ease-in-out 1s infinite alternate;
+            width:92px;height:92px;border-radius:26px;
+            background:linear-gradient(135deg,rgba(34,211,238,0.14),rgba(59,130,246,0.14));
+            border:1.5px solid rgba(34,211,238,0.38);
+            display:flex;align-items:center;justify-content:center;
+            animation:badge-pulse 2.2s ease-in-out 1s infinite alternate;
         }
-        @keyframes badge-pulse {
-            from { box-shadow: 0 0 28px rgba(34,211,238,0.14); }
-            to   { box-shadow: 0 0 60px rgba(34,211,238,0.38), 0 0 100px rgba(59,130,246,0.18); }
-        }
-        .splash-name {
-            opacity: 0; transform: translateY(20px);
-            animation: splash-up 0.6s ease 0.9s both;
-            font-size: 3.8rem; font-weight: 700; letter-spacing: -0.025em;
-            background: linear-gradient(90deg, #22d3ee, #60a5fa, #a78bfa);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .splash-line {
-            opacity: 0; transform: translateY(14px);
-            animation: splash-up 0.55s ease 1.4s both;
-            font-size: 1.05rem; color: #94a3b8;
-        }
-        .splash-line em { color: #22d3ee; font-style: normal; font-weight: 600; }
-        .splash-progress {
-            opacity: 0;
-            animation: splash-up 0.4s ease 1.85s both;
-            width: 160px; height: 2px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden;
-        }
-        .splash-fill {
-            height: 100%; width: 0;
-            background: linear-gradient(90deg, #22d3ee, #3b82f6);
-            border-radius: 2px;
-            animation: fill-bar 1.9s cubic-bezier(0.4,0,0.6,1) 2s both;
-        }
-
-        @keyframes splash-pop  { from { opacity:0; transform:scale(0.5); } to { opacity:1; transform:scale(1); } }
-        @keyframes splash-up   { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes fill-bar    { from { width:0; } to { width:100%; } }
-        @keyframes splash-exit {
-            0%   { opacity:1; transform:scale(1); }
-            100% { opacity:0; transform:scale(1.05); visibility:hidden; }
-        }
+        @keyframes badge-pulse { from{box-shadow:0 0 28px rgba(34,211,238,0.14);} to{box-shadow:0 0 60px rgba(34,211,238,0.38),0 0 100px rgba(59,130,246,0.18);} }
+        .splash-name { opacity:0;transform:translateY(20px);animation:splash-up 0.6s ease 0.9s both;font-size:clamp(2.4rem,8vw,3.8rem);font-weight:700;letter-spacing:-0.025em;background:linear-gradient(90deg,#22d3ee,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .splash-line { opacity:0;transform:translateY(14px);animation:splash-up 0.55s ease 1.4s both;font-size:clamp(0.85rem,3vw,1.05rem);color:#94a3b8; }
+        .splash-line em { color:#22d3ee;font-style:normal;font-weight:600; }
+        .splash-progress { opacity:0;animation:splash-up 0.4s ease 1.85s both;width:160px;height:2px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden; }
+        .splash-fill { height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#3b82f6);border-radius:2px;animation:fill-bar 1.9s cubic-bezier(0.4,0,0.6,1) 2s both; }
+        @keyframes splash-pop  { from{opacity:0;transform:scale(0.5);}to{opacity:1;transform:scale(1);} }
+        @keyframes splash-up   { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
+        @keyframes fill-bar    { from{width:0;}to{width:100%;} }
+        @keyframes splash-exit { 0%{opacity:1;transform:scale(1);}100%{opacity:0;transform:scale(1.05);visibility:hidden;} }
 
         .app {
-            position: relative; z-index: 10; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem;
-            opacity: 0; animation: app-in 0.65s ease 4.3s both;
+            position:relative;z-index:10;max-width:1180px;margin:0 auto;padding:1.5rem;
+            opacity:0;animation:app-in 0.5s ease 4.3s both;
         }
-        @keyframes app-in { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes app-in { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
 
-        /* ── Header ── */
-        .header { text-align: center; margin-bottom: 2.5rem; animation: fadeDown 0.7s ease both; }
-        .logo-row { display: inline-flex; align-items: center; gap: 0.9rem; margin-bottom: 0.6rem; }
+        .topbar {
+            display:flex;align-items:center;justify-content:space-between;
+            margin-bottom:1.75rem;flex-wrap:wrap;gap:0.75rem;
+        }
+        .logo-row { display:inline-flex;align-items:center;gap:0.75rem; }
         .logo-badge {
-            width: 52px; height: 52px; border-radius: 14px;
-            background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(59,130,246,0.15));
-            border: 1px solid var(--cyan-border);
-            display: flex; align-items: center; justify-content: center;
+            width:44px;height:44px;border-radius:12px;flex-shrink:0;
+            background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(59,130,246,0.15));
+            border:1px solid var(--cyan-border);
+            display:flex;align-items:center;justify-content:center;
         }
-        h1 {
-            font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02em;
-            background: linear-gradient(90deg, #22d3ee 0%, #60a5fa 50%, #a78bfa 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .tagline { font-size: 1rem; color: var(--text-2); }
-        .tagline em { color: var(--cyan); font-style: normal; font-weight: 600; }
+        h1 { font-size:clamp(1.5rem,4vw,2rem);font-weight:700;letter-spacing:-0.02em;background:linear-gradient(90deg,#22d3ee,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .tagline { font-size:0.78rem;color:var(--text-2);margin-top:1px; }
+        .tagline em { color:var(--cyan);font-style:normal;font-weight:600; }
 
-        /* ── Wallet bar ── */
-        .wallet-bar { display: flex; justify-content: center; margin-bottom: 2rem; animation: fadeUp 0.7s 0.15s ease both; }
+        .topbar-right { display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap; }
+
+        .net-select {
+            display:inline-flex;align-items:center;gap:0.4rem;
+            padding:0.4rem 0.75rem;
+            background:var(--card-bg);border:1px solid var(--border);
+            border-radius:999px;cursor:pointer;font-family:inherit;font-size:0.78rem;
+            color:var(--text-2);transition:border-color 0.15s,color 0.15s;
+            position:relative;
+        }
+        .net-select:hover { border-color:var(--cyan-border);color:var(--text-1); }
+        .net-dot { width:7px;height:7px;border-radius:50%;background:#10b981;flex-shrink:0;animation:dot-pulse 2s ease-in-out infinite; }
+        @keyframes dot-pulse { 0%,100%{opacity:1;}50%{opacity:0.4;} }
+        .net-dropdown {
+            position:absolute;top:calc(100% + 6px);right:0;
+            background:var(--card-bg);border:1px solid var(--border);
+            border-radius:12px;padding:0.4rem;min-width:190px;z-index:50;
+            box-shadow:0 12px 32px rgba(0,0,0,0.25);
+        }
+        .net-opt {
+            display:flex;align-items:center;gap:0.5rem;
+            padding:0.5rem 0.6rem;border-radius:8px;cursor:pointer;
+            font-size:0.8rem;color:var(--text-2);transition:background 0.15s,color 0.15s;
+        }
+        .net-opt:hover { background:var(--agent-bg);color:var(--text-1); }
+        .net-opt.active { color:var(--cyan);font-weight:600; }
+        .net-opt-dot { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
+
+        .theme-btn {
+            width:34px;height:34px;border-radius:50%;
+            background:var(--card-bg);border:1px solid var(--border);
+            display:flex;align-items:center;justify-content:center;cursor:pointer;
+            transition:border-color 0.15s,transform 0.2s;color:var(--text-2);
+        }
+        .theme-btn:hover { border-color:var(--cyan-border);color:var(--cyan);transform:rotate(20deg); }
+        .theme-btn svg { width:15px;height:15px; }
+
+        .wallet-bar { display:flex;justify-content:center;margin-bottom:1.5rem; }
         .btn-wallet {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            padding: 0.65rem 1.35rem;
-            background: linear-gradient(90deg, #0891b2, #2563eb);
-            color: #fff; border: none; border-radius: 999px;
-            font-family: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            display:inline-flex;align-items:center;gap:0.5rem;
+            padding:0.6rem 1.25rem;
+            background:linear-gradient(90deg,#0891b2,#2563eb);
+            color:#fff;border:none;border-radius:999px;
+            font-family:inherit;font-weight:600;font-size:0.88rem;cursor:pointer;
+            transition:transform 0.15s,box-shadow 0.15s;will-change:transform;
         }
-        .btn-wallet:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(6,182,212,0.35); }
-        .wallet-info { display: flex; align-items: center; gap: 0.75rem; }
+        .btn-wallet:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(6,182,212,0.35); }
+        .wallet-info { display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;justify-content:center; }
         .wallet-pill {
-            display: inline-flex; align-items: center; gap: 0.45rem;
-            padding: 0.45rem 0.9rem;
-            background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);
-            border-radius: 999px; color: #34d399;
-            font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+            display:inline-flex;align-items:center;gap:0.4rem;
+            padding:0.4rem 0.85rem;
+            background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);
+            border-radius:999px;color:#34d399;
+            font-family:'JetBrains Mono',monospace;font-size:0.78rem;cursor:pointer;
+            transition:background 0.15s;
         }
+        .wallet-pill:hover { background:rgba(16,185,129,0.18); }
         .btn-disconnect {
-            padding: 0.45rem 0.9rem; background: transparent; font-family: inherit;
-            border: 1px solid rgba(239,68,68,0.3); color: #f87171;
-            border-radius: 999px; cursor: pointer; font-size: 0.82rem; transition: background 0.2s;
+            padding:0.4rem 0.85rem;background:transparent;font-family:inherit;
+            border:1px solid rgba(239,68,68,0.3);color:#f87171;
+            border-radius:999px;cursor:pointer;font-size:0.8rem;transition:background 0.15s;
         }
-        .btn-disconnect:hover { background: rgba(239,68,68,0.08); }
+        .btn-disconnect:hover { background:rgba(239,68,68,0.08); }
 
-        /* ── Main grid ── */
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-        @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
-        .col { display: flex; flex-direction: column; gap: 1.25rem; }
+        .main-grid { display:grid;grid-template-columns:1fr 1fr;gap:1.1rem; }
+        @media(max-width:900px){ .main-grid{grid-template-columns:1fr;} }
+        .col { display:flex;flex-direction:column;gap:1.1rem; }
 
-        /* ── Card ── */
         .card {
-            background: var(--surface-2); backdrop-filter: blur(16px);
-            border: 1px solid var(--border); border-radius: 18px; padding: 1.4rem;
-            animation: fadeUp 0.6s ease both;
+            background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.25rem;
+            animation:fadeUp 0.45s ease both;contain:layout style;
+            transition:background 0.3s ease,border-color 0.3s ease;
         }
         .card-head {
-            display: flex; align-items: center; gap: 0.5rem;
-            font-size: 0.95rem; font-weight: 600; color: var(--text-1); margin-bottom: 1.1rem;
+            display:flex;align-items:center;justify-content:space-between;
+            margin-bottom:1rem;
         }
-        .card-head svg { width: 17px; height: 17px; color: var(--cyan); flex-shrink: 0; }
+        .card-head-left { display:flex;align-items:center;gap:0.45rem;font-size:0.9rem;font-weight:600;color:var(--text-1); }
+        .card-head-left svg { width:16px;height:16px;color:var(--cyan);flex-shrink:0; }
 
-        /* ── Agent grid ── */
-        .agent-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0.65rem; }
-        @media (max-width: 480px) { .agent-grid { grid-template-columns: 1fr; } }
-
+        .agent-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.6rem; }
+        @media(max-width:480px){ .agent-grid{grid-template-columns:1fr;} }
         .agent-tile {
-            background: var(--surface-3); border: 1.5px solid var(--border);
-            border-radius: 12px; padding: 0.75rem; cursor: pointer; min-width: 0;
-            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; position: relative;
+            background:var(--agent-bg);border:1.5px solid var(--border);
+            border-radius:11px;padding:0.7rem;cursor:pointer;min-width:0;position:relative;
+            transition:border-color 0.15s,box-shadow 0.15s,background 0.15s;will-change:transform;
         }
-        .agent-tile:hover { border-color: var(--cyan-border); box-shadow: 0 6px 20px rgba(34,211,238,0.08); }
-        .agent-tile.active { border-color: var(--cyan); background: var(--cyan-dim); box-shadow: 0 0 0 3px rgba(34,211,238,0.1); }
+        .agent-tile:hover { border-color:var(--cyan-border);box-shadow:0 5px 18px rgba(34,211,238,0.08); }
+        .agent-tile.active { border-color:var(--cyan);background:var(--cyan-dim);box-shadow:0 0 0 3px rgba(34,211,238,0.1); }
         .agent-tile.active::after {
-            content: "✓"; position: absolute; top: 6px; right: 6px;
-            width: 17px; height: 17px; line-height: 17px; text-align: center;
-            background: var(--cyan); color: #06070d; border-radius: 50%; font-size: 10px; font-weight: 700;
+            content:"✓";position:absolute;top:5px;right:5px;
+            width:16px;height:16px;line-height:16px;text-align:center;
+            background:var(--cyan);color:#06070d;border-radius:50%;font-size:9px;font-weight:700;
         }
         .agent-icon-wrap {
-            width: 32px; height: 32px;
-            background: linear-gradient(135deg, rgba(34,211,238,0.18), rgba(59,130,246,0.18));
-            border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;
+            width:30px;height:30px;
+            background:linear-gradient(135deg,rgba(34,211,238,0.18),rgba(59,130,246,0.18));
+            border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:0.45rem;
         }
-        .agent-icon-wrap svg { width: 15px; height: 15px; color: var(--cyan); }
-        .agent-name  { font-size: 0.75rem; font-weight: 600; color: var(--text-1); margin-bottom: 0.15rem; }
-        .agent-price { font-size: 0.68rem; color: var(--cyan); font-weight: 500; margin-bottom: 0.35rem; }
+        .agent-icon-wrap svg { width:14px;height:14px;color:var(--cyan); }
+        .agent-name  { font-size:0.72rem;font-weight:600;color:var(--text-1);margin-bottom:0.12rem; }
+        .agent-price { font-size:0.65rem;color:var(--cyan);font-weight:500;margin-bottom:0.3rem; }
+        .rep-row { display:flex;align-items:center;gap:0.3rem;margin-bottom:0.25rem; }
+        .stars { display:flex;gap:1px; }
+        .star { width:8px;height:8px; }
+        .star.full path { fill:var(--amber); }
+        .star.empty path { fill:rgba(128,128,128,0.25); }
+        .rep-score { font-size:0.6rem;color:var(--text-2);font-family:'JetBrains Mono',monospace; }
+        .conf-bar-wrap { display:flex;align-items:center;gap:0.3rem; }
+        .conf-label { font-size:0.56rem;color:var(--text-3);white-space:nowrap; }
+        .conf-bar-bg { flex:1;height:2.5px;background:rgba(128,128,128,0.15);border-radius:2px;overflow:hidden; }
+        .conf-bar-fill { height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--blue)); }
+        .agent-addr {
+            font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--text-3);
+            overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;margin-top:0.28rem;
+            cursor:pointer;transition:color 0.15s;
+        }
+        .agent-addr:hover { color:var(--cyan); }
 
-        /* ── Reputation bar ── */
-        .rep-row { display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.3rem; }
-        .stars { display: flex; gap: 1px; }
-        .star { width: 9px; height: 9px; }
-        .star.full path { fill: var(--amber); }
-        .star.empty path { fill: rgba(255,255,255,0.15); }
-        .rep-score { font-size: 0.63rem; color: var(--text-2); font-family: 'JetBrains Mono', monospace; }
-
-        /* confidence mini bar */
-        .conf-bar-wrap { display: flex; align-items: center; gap: 0.35rem; }
-        .conf-label { font-size: 0.58rem; color: var(--text-3); white-space: nowrap; }
-        .conf-bar-bg { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
-        .conf-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--cyan), var(--blue)); }
-
-        .agent-addr { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; margin-top: 0.3rem; }
-
-        /* ── Form ── */
-        .form-group { margin-bottom: 0.85rem; }
-        .form-label { display: block; font-size: 0.75rem; color: var(--text-2); margin-bottom: 0.3rem; font-weight: 500; }
+        .form-group { margin-bottom:0.8rem; }
+        .form-label { display:block;font-size:0.73rem;color:var(--text-2);margin-bottom:0.28rem;font-weight:500; }
         .form-input {
-            width: 100%; padding: 0.6rem 0.85rem;
-            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 9px; color: var(--text-1); font-size: 0.85rem;
-            transition: border-color 0.2s, box-shadow 0.2s; font-family: inherit;
+            width:100%;padding:0.58rem 0.8rem;
+            background:var(--input-bg);border:1px solid var(--input-border);
+            border-radius:8px;color:var(--text-1);font-size:0.83rem;
+            transition:border-color 0.15s,box-shadow 0.15s;font-family:inherit;
         }
-        .form-input:focus { outline: none; border-color: rgba(34,211,238,0.5); box-shadow: 0 0 0 3px rgba(34,211,238,0.08); }
-        .form-input::placeholder { color: var(--text-3); }
-        textarea.form-input { resize: vertical; min-height: 72px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+        .form-input:focus { outline:none;border-color:rgba(34,211,238,0.5);box-shadow:0 0 0 3px rgba(34,211,238,0.08); }
+        .form-input::placeholder { color:var(--text-3); }
+        textarea.form-input { resize:vertical;min-height:68px; }
+        .form-row { display:grid;grid-template-columns:1fr 1fr;gap:0.75rem; }
+        @media(max-width:480px){ .form-row{grid-template-columns:1fr;} }
 
-        /* ── WOW: Live Payout Preview ── */
         .payout-preview {
-            background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(59,130,246,0.06));
-            border: 1px solid rgba(34,211,238,0.18);
-            border-radius: 11px; padding: 0.9rem 1rem; margin-bottom: 0.85rem;
-            transition: all 0.4s ease;
+            background:linear-gradient(135deg,rgba(6,182,212,0.05),rgba(59,130,246,0.05));
+            border:1px solid rgba(34,211,238,0.15);border-radius:10px;
+            padding:0.8rem 0.9rem;margin-bottom:0.8rem;
+            transition:border-color 0.25s,background 0.25s;
         }
-        .payout-preview.live { border-color: rgba(34,211,238,0.4); background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(59,130,246,0.1)); }
-        .payout-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
-        .payout-row:last-child { margin-bottom: 0; }
-        .payout-key { font-size: 0.72rem; color: var(--text-2); }
-        .payout-val { font-size: 0.78rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: var(--text-1); }
-        .payout-val.accent { color: var(--cyan); }
-        .payout-val.success { color: #34d399; }
-        .payout-val.warn { color: var(--amber); }
-        .conf-slider-wrap { margin-top: 0.55rem; }
-        .conf-slider-label { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-2); margin-bottom: 0.3rem; }
-        .conf-track { height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; position: relative; }
-        .conf-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease, background 0.4s ease; }
-        .threshold-marker {
-            position: absolute; top: -2px; width: 2px; height: 9px; background: rgba(245,158,11,0.7); border-radius: 1px;
-            transition: left 0.4s ease;
-        }
-        .payout-note { font-size: 0.65rem; color: var(--text-3); margin-top: 0.45rem; text-align: center; }
+        .payout-preview.live { border-color:rgba(34,211,238,0.38);background:linear-gradient(135deg,rgba(6,182,212,0.09),rgba(59,130,246,0.09)); }
+        .payout-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.42rem; }
+        .payout-row:last-child { margin-bottom:0; }
+        .payout-key { font-size:0.7rem;color:var(--text-2); }
+        .payout-val { font-size:0.75rem;font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--text-1); }
+        .payout-val.accent { color:var(--cyan); }
+        .payout-val.ok { color:#34d399; }
+        .payout-val.warn { color:var(--amber); }
+        .conf-track-wrap { margin-top:0.5rem; }
+        .conf-track-labels { display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-2);margin-bottom:0.28rem; }
+        .conf-track { height:4px;background:rgba(128,128,128,0.12);border-radius:3px;position:relative;overflow:hidden; }
+        .conf-track-fill { height:100%;border-radius:3px;transition:width 0.35s ease,background 0.35s ease; }
+        .conf-marker { position:absolute;top:-2px;width:2px;height:8px;background:rgba(245,158,11,0.7);border-radius:1px;transition:left 0.35s ease; }
+        .payout-note { font-size:0.62rem;color:var(--text-3);margin-top:0.4rem;text-align:center; }
 
-        /* ── Buttons ── */
         .btn-primary {
-            width: 100%; padding: 0.8rem;
-            background: linear-gradient(90deg, #0891b2, #2563eb);
-            color: #fff; border: none; border-radius: 10px;
-            font-family: inherit; font-weight: 600; font-size: 0.88rem; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-            margin-top: 0.4rem; transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-            position: relative; overflow: hidden;
+            width:100%;padding:0.75rem;
+            background:linear-gradient(90deg,#0891b2,#2563eb);
+            color:#fff;border:none;border-radius:9px;
+            font-family:inherit;font-weight:600;font-size:0.85rem;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;gap:0.45rem;
+            margin-top:0.35rem;transition:transform 0.15s,box-shadow 0.15s,opacity 0.15s;
+            position:relative;overflow:hidden;will-change:transform;
         }
-        .btn-primary::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
-            opacity: 0; transition: opacity 0.2s;
-        }
-        .btn-primary:hover:not(:disabled)::before { opacity: 1; }
-        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(6,182,212,0.28); }
-        .btn-primary:disabled { opacity: 0.38; cursor: not-allowed; }
-        .btn-verify { background: linear-gradient(90deg, #059669, #0891b2); }
-        .btn-verify:hover:not(:disabled) { box-shadow: 0 10px 28px rgba(16,185,129,0.28); }
+        .btn-primary:hover:not(:disabled) { transform:translateY(-2px);box-shadow:0 8px 24px rgba(6,182,212,0.28); }
+        .btn-primary:disabled { opacity:0.38;cursor:not-allowed; }
+        .btn-verify { background:linear-gradient(90deg,#059669,#0891b2); }
+        .btn-verify:hover:not(:disabled) { box-shadow:0 8px 24px rgba(16,185,129,0.28); }
+        .spinner { width:15px;height:15px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.75s linear infinite;flex-shrink:0; }
+        @keyframes spin { to{transform:rotate(360deg);} }
 
-        .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.75s linear infinite; flex-shrink: 0; }
-
-        /* ── Success blast ── */
         .success-blast {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 0.5rem; padding: 1.1rem;
-            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.08));
-            border: 1px solid rgba(16,185,129,0.35); border-radius: 10px;
-            margin-top: 0.4rem; animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+            display:flex;flex-direction:column;align-items:center;gap:0.45rem;padding:1rem;
+            background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(6,182,212,0.06));
+            border:1px solid rgba(16,185,129,0.3);border-radius:9px;
+            margin-top:0.35rem;animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
         }
         .blast-icon {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, #059669, #06b6d4);
-            display: flex; align-items: center; justify-content: center;
-            animation: pulse-ring 1.5s ease-out infinite;
+            width:36px;height:36px;border-radius:50%;
+            background:linear-gradient(135deg,#059669,#06b6d4);
+            display:flex;align-items:center;justify-content:center;
+            animation:pulse-ring 1.5s ease-out infinite;
         }
-        @keyframes pulse-ring {
-            0%   { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
-            70%  { box-shadow: 0 0 0 12px rgba(16,185,129,0); }
-            100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
-        }
-        .blast-title { font-size: 0.9rem; font-weight: 700; color: #34d399; }
-        .blast-sub { font-size: 0.72rem; color: var(--text-2); text-align: center; }
-
+        @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(16,185,129,0.5);}70%{box-shadow:0 0 0 10px rgba(16,185,129,0);}100%{box-shadow:0 0 0 0 rgba(16,185,129,0);} }
+        .blast-title { font-size:0.85rem;font-weight:700;color:#34d399; }
+        .blast-sub { font-size:0.68rem;color:var(--text-2);text-align:center; }
         .status-error {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.75rem 0.9rem; background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.25); border-radius: 9px;
-            color: #f87171; font-size: 0.82rem; margin-top: 0.4rem;
+            display:flex;align-items:center;gap:0.45rem;padding:0.7rem 0.85rem;
+            background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.22);
+            border-radius:8px;color:#f87171;font-size:0.8rem;margin-top:0.35rem;
         }
-
         .tx-pill {
-            display: block; padding: 0.5rem 0.75rem; margin-top: 0.65rem;
-            background: rgba(0,0,0,0.4); border: 1px solid var(--border);
-            border-radius: 8px; font-family: 'JetBrains Mono', monospace;
-            font-size: 0.63rem; color: var(--text-3); text-align: center; word-break: break-all;
+            display:flex;align-items:center;justify-content:space-between;
+            padding:0.45rem 0.7rem;margin-top:0.6rem;
+            background:var(--log-bg);border:1px solid var(--border);
+            border-radius:7px;font-family:'JetBrains Mono',monospace;
+            font-size:0.6rem;color:var(--text-3);cursor:pointer;
+            transition:border-color 0.15s,color 0.15s;
         }
+        .tx-pill:hover { border-color:var(--cyan-border);color:var(--cyan); }
+        .copy-icon { width:11px;height:11px;flex-shrink:0; }
 
-        /* ── Log ── */
-        .log-box {
-            max-height: 190px; overflow-y: auto;
-            background: rgba(0,0,0,0.35); border: 1px solid var(--border);
-            border-radius: 10px; padding: 0.8rem;
+        .history-list { display:flex;flex-direction:column;gap:0.5rem;max-height:260px;overflow-y:auto; }
+        .history-list::-webkit-scrollbar { width:3px; }
+        .history-list::-webkit-scrollbar-thumb { background:rgba(128,128,128,0.2);border-radius:2px; }
+        .history-empty { text-align:center;color:var(--text-3);padding:1.5rem;font-size:0.8rem; }
+        .h-item {
+            display:flex;align-items:center;justify-content:space-between;
+            padding:0.55rem 0.75rem;background:var(--history-badge-bg);
+            border:1px solid var(--border);border-radius:9px;gap:0.5rem;
+            transition:border-color 0.15s;
         }
-        .log-box::-webkit-scrollbar { width: 4px; }
-        .log-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
-        .log-item { font-size: 0.75rem; padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-        .log-item:last-child { border-bottom: none; }
-        .log-t { color: var(--text-3); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; margin-right: 0.35rem; }
-        .log-m { color: var(--text-2); }
-        .log-m.success { color: #34d399; }
-        .log-m.fail    { color: #f87171; }
-        .log-link { color: var(--cyan); text-decoration: underline; margin-left: 0.35rem; font-size: 0.65rem; }
-        .log-empty { text-align: center; color: var(--text-3); padding: 1.5rem; font-size: 0.82rem; }
+        .h-item:hover { border-color:rgba(128,128,128,0.2); }
+        .h-left { display:flex;flex-direction:column;gap:0.15rem;min-width:0; }
+        .h-id { font-size:0.75rem;font-weight:600;color:var(--text-1); }
+        .h-agent { font-size:0.65rem;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+        .h-meta { font-size:0.62rem;color:var(--text-3);font-family:'JetBrains Mono',monospace; }
+        .h-right { display:flex;align-items:center;gap:0.5rem;flex-shrink:0; }
+        .h-amount { font-size:0.7rem;font-weight:600;color:var(--cyan);font-family:'JetBrains Mono',monospace; }
+        .h-status {
+            font-size:0.6rem;font-weight:600;padding:0.18rem 0.5rem;border-radius:999px;
+            text-transform:uppercase;letter-spacing:0.04em;
+        }
+        .h-status.pending  { background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.25); }
+        .h-status.released { background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.25); }
+        .h-status.refunded { background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.22); }
+        .h-tx-btn {
+            background:none;border:none;cursor:pointer;color:var(--text-3);padding:0;
+            transition:color 0.15s;display:flex;align-items:center;
+        }
+        .h-tx-btn:hover { color:var(--cyan); }
+        .h-tx-btn svg { width:12px;height:12px; }
 
-        /* ── Toast ── */
-        .toasts { position: fixed; top: 1rem; right: 1rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
+        .log-box { max-height:170px;overflow-y:auto;background:var(--log-bg);border:1px solid var(--border);border-radius:9px;padding:0.75rem; }
+        .log-box::-webkit-scrollbar { width:3px; }
+        .log-box::-webkit-scrollbar-thumb { background:rgba(128,128,128,0.2);border-radius:2px; }
+        .log-item { font-size:0.72rem;padding:0.28rem 0;border-bottom:1px solid rgba(128,128,128,0.06);display:flex;align-items:baseline;gap:0.3rem;flex-wrap:wrap; }
+        .log-item:last-child { border-bottom:none; }
+        .log-t { color:var(--text-3);font-family:'JetBrains Mono',monospace;font-size:0.62rem;flex-shrink:0; }
+        .log-m { color:var(--text-2); }
+        .log-m.ok   { color:#34d399; }
+        .log-m.fail { color:#f87171; }
+        .log-link { color:var(--cyan);text-decoration:underline;font-size:0.62rem;flex-shrink:0; }
+        .log-empty { text-align:center;color:var(--text-3);padding:1.25rem;font-size:0.8rem; }
+
+        .toasts { position:fixed;top:1rem;right:1rem;z-index:999;display:flex;flex-direction:column;gap:0.45rem; }
         .toast {
-            padding: 0.8rem 1.1rem; background: rgba(10,10,18,0.97); backdrop-filter: blur(12px);
-            border: 1px solid var(--border); border-radius: 12px;
-            display: flex; align-items: center; gap: 0.65rem;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.4); max-width: 340px;
-            animation: slideRight 0.3s ease both;
+            padding:0.75rem 1rem;background:var(--toast-bg);border:1px solid var(--border);border-radius:11px;
+            display:flex;align-items:center;gap:0.6rem;
+            box-shadow:0 12px 32px rgba(0,0,0,0.25);max-width:320px;
+            animation:slideRight 0.25s ease both;
         }
-        .toast.ok  { border-color: rgba(16,185,129,0.35); }
-        .toast.err { border-color: rgba(239,68,68,0.35); }
-        .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
-        .toast.ok  svg { color: #34d399; }
-        .toast.err svg { color: #f87171; }
-        .toast span { font-size: 0.82rem; color: var(--text-1); }
+        .toast.ok  { border-color:rgba(16,185,129,0.3); }
+        .toast.err { border-color:rgba(239,68,68,0.3); }
+        .toast svg { width:15px;height:15px;flex-shrink:0; }
+        .toast.ok  svg { color:#34d399; }
+        .toast.err svg { color:#f87171; }
+        .toast span { font-size:0.8rem;color:var(--text-1); }
 
-        /* ── Footer ── */
-        .footer { text-align: center; color: var(--text-3); font-size: 0.72rem; padding: 2rem 0 1rem; }
+        .footer { text-align:center;color:var(--text-3);font-size:0.7rem;padding:1.5rem 0 1rem; }
 
-        /* ── Animations ── */
-        @keyframes fadeDown  { from { opacity:0; transform: translateY(-16px); } to { opacity:1; transform: translateY(0); } }
-        @keyframes fadeUp    { from { opacity:0; transform: translateY(16px);  } to { opacity:1; transform: translateY(0); } }
-        @keyframes spin      { to { transform: rotate(360deg); } }
-        @keyframes slideRight{ from { opacity:0; transform: translateX(60px); } to { opacity:1; transform: translateX(0); } }
-        @keyframes popIn     { from { opacity:0; transform: scale(0.85); } to { opacity:1; transform: scale(1); } }
-        @keyframes fadeIn    { from { opacity:0; } to { opacity:1; } }
+        @keyframes fadeDown  { from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);} }
+        @keyframes fadeUp    { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+        @keyframes slideRight{ from{opacity:0;transform:translateX(50px);}to{opacity:1;transform:translateX(0);} }
+        @keyframes popIn     { from{opacity:0;transform:scale(0.88);}to{opacity:1;transform:scale(1);} }
+
+        @media(max-width:640px){
+            .app { padding:1rem 0.85rem; }
+            .topbar { flex-direction:column;align-items:flex-start;gap:0.6rem; }
+            .topbar-right { width:100%;justify-content:space-between; }
+            .wallet-info { gap:0.45rem; }
+            h1 { font-size:1.6rem; }
+            .card { padding:1rem; border-radius:13px; }
+            .main-grid { gap:0.85rem; }
+            .agent-grid { grid-template-columns:repeat(3,minmax(0,1fr));gap:0.45rem; }
+            .history-list { max-height:220px; }
+            .toasts { top:0.5rem;right:0.5rem;left:0.5rem; }
+            .toast { max-width:100%; }
+        }
+        @media(max-width:380px){
+            .agent-grid { grid-template-columns:1fr; }
+        }
     </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useCallback, useMemo } = React;
+const { useState, useEffect, useCallback, useRef } = React;
 
 const CONTRACT_ADDRESS = "0x156C52c25d94956bBf20BE025ACbc55c1A5d56d6";
 const CONTRACT_ABI = [
@@ -446,59 +448,101 @@ const CONTRACT_ABI = [
     "function escrowCounter() view returns (uint256)"
 ];
 
-const AGENTS = [
-    {
-        name: "ETH Predictor", price: "0.01", symbol: "OKB",
-        address: "0x04b772f0cf69f45956061100d14bc5417b9ba3eb",
-        reputation: 4.8, confidence: 91, trades: 1240,
-        placeholder: 'e.g. ETH price prediction: 3500',
-        Icon: () => (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                <polyline points="17 6 23 6 23 12"/>
-            </svg>
-        )
-    },
-    {
-        name: "Sentiment", price: "0.005", symbol: "OKB",
-        address: "0x04b772f0cf69f45956061100d14bc5417b9ba3eb",
-        reputation: 4.5, confidence: 83, trades: 870,
-        placeholder: 'e.g. Market sentiment: BULLISH (score 0.78)',
-        Icon: () => (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-                <line x1="9" y1="9" x2="9.01" y2="9"/>
-                <line x1="15" y1="9" x2="15.01" y2="9"/>
-            </svg>
-        )
-    },
-    {
-        name: "Code Auditor", price: "0.02", symbol: "OKB",
-        address: "0x04b772f0cf69f45956061100d14bc5417b9ba3eb",
-        reputation: 4.9, confidence: 96, trades: 432,
-        placeholder: 'e.g. Audit result: PASS — 0 critical vulnerabilities',
-        Icon: () => (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="16 18 22 12 16 6"/>
-                <polyline points="8 6 2 12 8 18"/>
-            </svg>
-        )
-    }
+// ========== AGENT REGISTRY CONTRACT ==========
+const REGISTRY_ADDRESS = "0x2b63B3c363b29B82E09d036167Ac212d4c7026d5";
+const REGISTRY_ABI = [
+    "function getActiveAgents() view returns ((address agentAddress, string name, string description, uint256 price, bool isActive, uint256 registeredAt)[])"
 ];
 
-/* ── Star rating ── */
+const NETWORKS = [
+    { id: 'xlayer-test', name: 'X Layer Testnet', color: '#22d3ee', chainId: '0xC3' },
+    { id: 'sepolia',     name: 'Sepolia',         color: '#a78bfa', chainId: '0xaa36a7' },
+    { id: 'mumbai',      name: 'Polygon Mumbai',  color: '#8b5cf6', chainId: '0x13881' },
+    { id: 'bnb-test',    name: 'BNB Testnet',     color: '#f59e0b', chainId: '0x61' },
+];
+
+// ========== ICON COMPONENTS ==========
+const ETHIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+const SentimentIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>;
+const CodeAuditorIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
+
+// Helper to get icon by agent name
+function getAgentIcon(name) {
+    if (name.toLowerCase().includes('eth') || name.toLowerCase().includes('predictor')) return <ETHIcon />;
+    if (name.toLowerCase().includes('sentiment')) return <SentimentIcon />;
+    if (name.toLowerCase().includes('code') || name.toLowerCase().includes('auditor')) return <CodeAuditorIcon />;
+    return <ETHIcon />;
+}
+
+// Helper to get placeholder text
+function getPlaceholder(name, description) {
+    if (name.toLowerCase().includes('eth')) return "e.g. ETH price prediction: 3500";
+    if (name.toLowerCase().includes('sentiment')) return "e.g. Market sentiment: BULLISH (score 0.78)";
+    if (name.toLowerCase().includes('code') || name.toLowerCase().includes('auditor')) return "e.g. Audit result: PASS — 0 critical vulnerabilities";
+    return description || "Enter expected result";
+}
+
+// Fetch agents from blockchain
+async function fetchAgentsFromRegistry(signer) {
+    if (!signer) return [];
+    try {
+        const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, signer);
+        const agents = await registry.getActiveAgents();
+        return agents.map((agent, idx) => ({
+            name: agent.name,
+            price: ethers.formatEther(agent.price),
+            symbol: "OKB",
+            address: agent.agentAddress,
+            description: agent.description,
+            reputation: 4.5 + (idx * 0.2), // Dynamic based on index
+            confidence: 85 + (idx * 5),
+            trades: 0,
+            placeholder: getPlaceholder(agent.name, agent.description),
+            Icon: () => getAgentIcon(agent.name)
+        }));
+    } catch (err) {
+        console.error("Failed to fetch agents:", err);
+        return [];
+    }
+}
+
+/* ── Copy helper ── */
+function useCopy() {
+    const [copied, setCopied] = useState(false);
+    const copy = useCallback((text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1800);
+        });
+    }, []);
+    return [copied, copy];
+}
+
+/* ── CopyBtn ── */
+function CopyBtn({ text, children, className = '' }) {
+    const [copied, copy] = useCopy();
+    return (
+        <span className={className} onClick={e => { e.stopPropagation(); copy(text); }} title={copied ? 'Copied!' : 'Copy'} style={{cursor:'pointer'}}>
+            {children}
+            <svg className="copy-icon" style={{marginLeft:4,display:'inline',verticalAlign:'middle',color:copied?'#34d399':'currentColor'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                {copied
+                    ? <><polyline points="20 6 9 17 4 12"/></>
+                    : <><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></>
+                }
+            </svg>
+        </span>
+    );
+}
+
+/* ── Stars ── */
 function Stars({ score }) {
     return (
         <div className="stars">
-            {[1,2,3,4,5].map(i => {
-                const full = score >= i;
-                return (
-                    <svg key={i} className={`star ${full ? 'full' : 'empty'}`} viewBox="0 0 12 12">
-                        <path d="M6 1l1.3 3.9H11L8.2 7.1l1 3.8L6 8.7l-3.2 2.2 1-3.8L1 4.9h3.7z" strokeWidth="0"/>
-                    </svg>
-                );
-            })}
+            {[1,2,3,4,5].map(i => (
+                <svg key={i} className={`star ${score >= i ? 'full' : 'empty'}`} viewBox="0 0 12 12">
+                    <path d="M6 1l1.3 3.9H11L8.2 7.1l1 3.8L6 8.7l-3.2 2.2 1-3.8L1 4.9h3.7z" strokeWidth="0"/>
+                </svg>
+            ))}
         </div>
     );
 }
@@ -507,8 +551,8 @@ function Stars({ score }) {
 function Toast({ message, type, onClose }) {
     useEffect(() => { const t = setTimeout(onClose, 5000); return () => clearTimeout(t); }, [onClose]);
     return (
-        <div className={`toast ${type === 'success' ? 'ok' : 'err'}`}>
-            {type === 'success'
+        <div className={`toast ${type==='success'?'ok':'err'}`}>
+            {type==='success'
                 ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             }
@@ -517,21 +561,61 @@ function Toast({ message, type, onClose }) {
     );
 }
 
-/* ── Live Payout Preview ── */
+/* ── Network Switcher ── */
+function NetSwitcher({ network, setNetwork }) {
+    const [open, setOpen] = useState(false);
+    const ref = useRef(null);
+    useEffect(() => {
+        const handler = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+    const current = NETWORKS.find(n => n.id === network) || NETWORKS[0];
+    return (
+        <div ref={ref} className="net-select" onClick={() => setOpen(o => !o)}>
+            <span className="net-dot" style={{background: current.color}}></span>
+            <span>{current.name}</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{marginLeft:2}}><polyline points="6 9 12 15 18 9"/></svg>
+            {open && (
+                <div className="net-dropdown" onClick={e => e.stopPropagation()}>
+                    {NETWORKS.map(n => (
+                        <div key={n.id} className={`net-opt ${network === n.id ? 'active' : ''}`}
+                             onClick={() => { setNetwork(n.id); setOpen(false); }}>
+                            <span className="net-opt-dot" style={{background: n.color}}></span>
+                            {n.name}
+                            {network === n.id && <svg style={{marginLeft:'auto',width:12,height:12}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ── Theme Toggle ── */
+function ThemeBtn({ dark, toggle }) {
+    return (
+        <button className="theme-btn" onClick={toggle} title={dark ? 'Switch to light mode' : 'Switch to dark mode'}>
+            {dark
+                ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            }
+        </button>
+    );
+}
+
+/* ── Payout Preview ── */
 function PayoutPreview({ amount, minConf, agentConf }) {
-    const amtNum = parseFloat(amount) || 0;
+    const amt = parseFloat(amount) || 0;
     const minPct = parseInt(minConf) || 80;
     const histPct = agentConf || 88;
-    const willRelease = histPct >= minPct;
-    const payout = willRelease ? amtNum : 0;
-    const fillColor = willRelease ? 'linear-gradient(90deg,#10b981,#06b6d4)' : 'linear-gradient(90deg,#f59e0b,#ef4444)';
-    const thresholdLeft = `${minPct}%`;
-
+    const ok = histPct >= minPct;
+    const fillColor = ok ? 'linear-gradient(90deg,#10b981,#06b6d4)' : 'linear-gradient(90deg,#f59e0b,#ef4444)';
     return (
-        <div className={`payout-preview ${amtNum > 0 ? 'live' : ''}`}>
+        <div className={`payout-preview${amt > 0 ? ' live' : ''}`}>
             <div className="payout-row">
                 <span className="payout-key">Locked amount</span>
-                <span className="payout-val accent">{amtNum > 0 ? `${amtNum} OKB` : '—'}</span>
+                <span className="payout-val accent">{amt > 0 ? `${amt} OKB` : '—'}</span>
             </div>
             <div className="payout-row">
                 <span className="payout-key">Min confidence</span>
@@ -539,51 +623,87 @@ function PayoutPreview({ amount, minConf, agentConf }) {
             </div>
             <div className="payout-row">
                 <span className="payout-key">Agent avg confidence</span>
-                <span className={`payout-val ${willRelease ? 'success' : 'warn'}`}>{histPct}%</span>
+                <span className={`payout-val ${ok ? 'ok' : 'warn'}`}>{histPct}%</span>
             </div>
             <div className="payout-row">
                 <span className="payout-key">Expected payout</span>
-                <span className={`payout-val ${willRelease ? 'success' : 'warn'}`}>
-                    {amtNum > 0 ? (willRelease ? `${payout} OKB ✓` : 'Refunded') : '—'}
-                </span>
+                <span className={`payout-val ${ok ? 'ok' : 'warn'}`}>{amt > 0 ? (ok ? `${amt} OKB ✓` : 'Refunded') : '—'}</span>
             </div>
-            <div className="conf-slider-wrap">
-                <div className="conf-slider-label">
-                    <span>Confidence history</span>
-                    <span>{histPct}%</span>
-                </div>
+            <div className="conf-track-wrap">
+                <div className="conf-track-labels"><span>Confidence history</span><span>{histPct}%</span></div>
                 <div className="conf-track">
-                    <div className="conf-fill" style={{ width: `${histPct}%`, background: fillColor }}></div>
-                    <div className="threshold-marker" style={{ left: thresholdLeft }}></div>
+                    <div className="conf-track-fill" style={{width:`${histPct}%`,background:fillColor}}></div>
+                    <div className="conf-marker" style={{left:`${minPct}%`}}></div>
                 </div>
             </div>
-            <div className="payout-note">
-                {willRelease
-                    ? `Agent historically meets your ${minPct}% threshold — payout likely`
-                    : `Agent avg (${histPct}%) is below your ${minPct}% threshold — payment may be refunded`
-                }
-            </div>
+            <div className="payout-note">{ok ? `Agent meets your ${minPct}% threshold — payout likely` : `Agent avg (${histPct}%) below threshold — may refund`}</div>
         </div>
     );
 }
 
-/* ── Agent tile ── */
+/* ── Agent Tile ── */
 function AgentTile({ agent, isSelected, onClick }) {
+    const Icon = agent.Icon;
     return (
         <div className={`agent-tile${isSelected ? ' active' : ''}`} onClick={onClick}>
-            <div className="agent-icon-wrap"><agent.Icon /></div>
+            <div className="agent-icon-wrap"><Icon /></div>
             <div className="agent-name">{agent.name}</div>
             <div className="agent-price">{agent.price} {agent.symbol}</div>
-            <div className="rep-row">
-                <Stars score={agent.reputation} />
-                <span className="rep-score">{agent.reputation}</span>
-            </div>
+            <div className="rep-row"><Stars score={agent.reputation}/><span className="rep-score">{agent.reputation}</span></div>
             <div className="conf-bar-wrap">
                 <span className="conf-label">Conf.</span>
-                <div className="conf-bar-bg"><div className="conf-bar-fill" style={{ width: `${agent.confidence}%` }}></div></div>
+                <div className="conf-bar-bg"><div className="conf-bar-fill" style={{width:`${agent.confidence}%`}}></div></div>
                 <span className="conf-label">{agent.confidence}%</span>
             </div>
-            <div className="agent-addr">{agent.address}</div>
+            <CopyBtn text={agent.address} className="agent-addr">{agent.address}</CopyBtn>
+        </div>
+    );
+}
+
+/* ── Escrow History ── */
+function EscrowHistory({ history, network }) {
+    const net = NETWORKS.find(n => n.id === network) || NETWORKS[0];
+    const explorerBase = network === 'xlayer-test'
+        ? 'https://www.okx.com/web3/explorer/xlayer-testnet/tx/'
+        : network === 'sepolia' ? 'https://sepolia.etherscan.io/tx/'
+        : network === 'mumbai'  ? 'https://mumbai.polygonscan.com/tx/'
+        : 'https://testnet.bscscan.com/tx/';
+
+    return (
+        <div className="card">
+            <div className="card-head">
+                <div className="card-head-left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    Escrow History
+                </div>
+                <span style={{fontSize:'0.65rem',color:'var(--text-3)',fontFamily:"'JetBrains Mono',monospace"}}>{history.length} record{history.length !== 1 ? 's' : ''}</span>
+            </div>
+            <div className="history-list">
+                {history.length === 0
+                    ? <div className="history-empty">No escrows yet. Create one to get started.</div>
+                    : history.map((h, i) => (
+                        <div key={i} className="h-item">
+                            <div className="h-left">
+                                <span className="h-id">Escrow #{h.id}</span>
+                                <span className="h-agent">{h.agent}</span>
+                                <span className="h-meta">{h.time} · {h.minConf}% min conf</span>
+                            </div>
+                            <div className="h-right">
+                                <span className="h-amount">{h.amount} OKB</span>
+                                <span className={`h-status ${h.status}`}>{h.status}</span>
+                                {h.txHash && (
+                                    <a className="h-tx-btn" href={`${explorerBase}${h.txHash}`} target="_blank" rel="noopener noreferrer" title="View on explorer">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                    </a>
+                                )}
+                                <CopyBtn text={h.txHash || h.id.toString()} className="h-tx-btn" title="Copy TX hash">
+                                    <span style={{display:'none'}}></span>
+                                </CopyBtn>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
         </div>
     );
 }
@@ -598,52 +718,42 @@ function EscrowForm({ contract, onSuccess, onLog, selectedAgent, addToast }) {
     const [status, setStatus]       = useState('idle');
     const [txHash, setTxHash]       = useState('');
     const [escrowNum, setEscrowNum] = useState(null);
+    const [copied, copy]            = useCopy();
 
     useEffect(() => {
-        if (selectedAgent) {
-            setAgentAddr(selectedAgent.address);
-            setAmount(selectedAgent.price);
-        }
+        if (selectedAgent) { setAgentAddr(selectedAgent.address); setAmount(selectedAgent.price); }
     }, [selectedAgent]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!contract || !agentAddr || !amount || !result) return;
-        setLoading(true); setStatus('processing');
-        onLog('Creating escrow transaction...');
+        setLoading(true); setStatus('processing'); onLog('Creating escrow transaction...');
         try {
             const hashlock = ethers.keccak256(ethers.toUtf8Bytes(result));
             const tx = await contract.createEscrow(agentAddr, hashlock, parseInt(minConf), 3600, { value: ethers.parseEther(amount) });
-            setTxHash(tx.hash);
-            onLog(`TX sent: ${tx.hash.slice(0,14)}...`, tx.hash);
+            setTxHash(tx.hash); onLog(`TX sent: ${tx.hash.slice(0,14)}...`, tx.hash);
             await tx.wait();
             const counter = await contract.escrowCounter();
             const id = Number(counter) - 1;
-            setEscrowNum(id);
-            setStatus('success');
+            setEscrowNum(id); setStatus('success');
             onLog(`SUCCESS Escrow #${id} created!`, tx.hash, true);
-            addToast(`Escrow #${id} created successfully!`, 'success');
-            onSuccess(id, tx.hash);
-            setTimeout(() => { setStatus('idle'); setResult(''); setEscrowNum(null); }, 5000);
+            addToast(`Escrow #${id} created!`, 'success');
+            onSuccess({ id, agent: selectedAgent?.name || agentAddr.slice(0,8)+'...', amount, minConf, txHash: tx.hash, time: new Date().toLocaleTimeString(), status: 'pending' });
+            setTimeout(() => { setStatus('idle'); setResult(''); setEscrowNum(null); setTxHash(''); }, 5000);
         } catch (err) {
-            setStatus('error');
-            onLog(`FAILED: ${err.message}`, null, false, true);
-            addToast(err.message || 'Failed to create escrow', 'error');
+            setStatus('error'); onLog(`FAILED: ${err.message}`, null, false, true);
+            addToast(err.message || 'Failed', 'error');
             setTimeout(() => setStatus('idle'), 3000);
         } finally { setLoading(false); }
     };
 
-    const placeholder = selectedAgent?.placeholder || 'e.g. ETH price prediction: 3500';
-
     return (
         <div className="card">
             <div className="card-head">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="7" width="20" height="14" rx="2"/>
-                    <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-                    <circle cx="12" cy="14" r="1" fill="currentColor" stroke="none"/>
-                </svg>
-                Create Escrow
+                <div className="card-head-left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><circle cx="12" cy="14" r="1" fill="currentColor" stroke="none"/></svg>
+                    Create Escrow
+                </div>
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -660,70 +770,67 @@ function EscrowForm({ contract, onSuccess, onLog, selectedAgent, addToast }) {
                         <input type="number" min="0" max="100" className="form-input" value={minConf} onChange={e => setMinConf(e.target.value)} placeholder="80" />
                     </div>
                 </div>
-
-                {/* WOW: Live payout preview */}
                 <PayoutPreview amount={amount} minConf={minConf} agentConf={selectedAgent?.confidence} />
-
                 <div className="form-group">
                     <label className="form-label">Expected Result <span style={{color:'var(--text-3)',fontWeight:400}}>(hashed on-chain)</span></label>
-                    <textarea className="form-input" value={result} onChange={e => setResult(e.target.value)} placeholder={placeholder} rows="2" />
+                    <textarea className="form-input" value={result} onChange={e => setResult(e.target.value)} placeholder={selectedAgent?.placeholder || 'e.g. ETH price prediction: 3500'} rows="2" />
                 </div>
-
                 {status === 'success' && (
                     <div className="success-blast">
-                        <div className="blast-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        </div>
+                        <div className="blast-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
                         <div className="blast-title">Escrow #{escrowNum} Created!</div>
                         <div className="blast-sub">Payment locked · Agent notified · Awaiting delivery</div>
                     </div>
                 )}
                 {status === 'error' && (
                     <div className="status-error">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                         Transaction failed
                     </div>
                 )}
                 {(status === 'idle' || status === 'processing') && (
                     <button type="submit" className="btn-primary" disabled={loading || !contract || !agentAddr || !amount || !result}>
-                        {loading
-                            ? <><div className="spinner"/> Processing...</>
-                            : <><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Lock Payment</>
-                        }
+                        {loading ? <><div className="spinner"/> Processing...</> : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Lock Payment</>}
                     </button>
                 )}
-                {txHash && <div className="tx-pill">TX: {txHash.slice(0,22)}...{txHash.slice(-8)}</div>}
+                {txHash && (
+                    <div className="tx-pill" onClick={() => copy(txHash)} title="Copy TX hash">
+                        <span>TX: {txHash.slice(0,22)}...{txHash.slice(-6)}</span>
+                        <svg className="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{color:copied?'#34d399':'currentColor'}}>
+                            {copied ? <polyline points="20 6 9 17 4 12"/> : <><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></>}
+                        </svg>
+                    </div>
+                )}
             </form>
         </div>
     );
 }
 
 /* ── Verify Form ── */
-function VerifyForm({ contract, onLog, addToast }) {
+function VerifyForm({ contract, onLog, addToast, onRelease }) {
     const [escrowId, setEscrowId] = useState('');
     const [actual, setActual]     = useState('');
     const [conf, setConf]         = useState('');
     const [loading, setLoading]   = useState(false);
     const [status, setStatus]     = useState('idle');
     const [txHash, setTxHash]     = useState('');
+    const [copied, copy]          = useCopy();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!contract || !escrowId || !actual || !conf) return;
-        setLoading(true); setStatus('processing');
-        onLog(`Verifying escrow #${escrowId}...`);
+        setLoading(true); setStatus('processing'); onLog(`Verifying escrow #${escrowId}...`);
         try {
             const tx = await contract.verifyAndRelease(parseInt(escrowId), ethers.toUtf8Bytes(actual), parseInt(conf));
-            setTxHash(tx.hash);
-            onLog(`Verification TX sent: ${tx.hash.slice(0,14)}...`, tx.hash);
+            setTxHash(tx.hash); onLog(`Verification TX: ${tx.hash.slice(0,14)}...`, tx.hash);
             await tx.wait();
             setStatus('success');
-            onLog(`SUCCESS Payment released for Escrow #${escrowId}!`, tx.hash, true);
+            onLog(`SUCCESS Payment released for #${escrowId}!`, tx.hash, true);
             addToast(`Payment released for Escrow #${escrowId}!`, 'success');
-            setTimeout(() => { setStatus('idle'); setActual(''); setConf(''); }, 5000);
+            onRelease(parseInt(escrowId), tx.hash);
+            setTimeout(() => { setStatus('idle'); setActual(''); setConf(''); setTxHash(''); }, 5000);
         } catch (err) {
-            setStatus('error');
-            onLog(`FAILED: ${err.message}`, null, false, true);
+            setStatus('error'); onLog(`FAILED: ${err.message}`, null, false, true);
             addToast(err.message || 'Verification failed', 'error');
             setTimeout(() => setStatus('idle'), 3000);
         } finally { setLoading(false); }
@@ -732,11 +839,10 @@ function VerifyForm({ contract, onLog, addToast }) {
     return (
         <div className="card">
             <div className="card-head">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    <polyline points="9 12 11 14 15 10"/>
-                </svg>
-                Verify and Release
+                <div className="card-head-left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                    Verify and Release
+                </div>
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -753,54 +859,53 @@ function VerifyForm({ contract, onLog, addToast }) {
                 </div>
                 {status === 'success' && (
                     <div className="success-blast">
-                        <div className="blast-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        </div>
+                        <div className="blast-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
                         <div className="blast-title">Payment Released!</div>
-                        <div className="blast-sub">Agent has been paid · Proof stored on-chain</div>
+                        <div className="blast-sub">Agent paid · Proof stored on-chain</div>
                     </div>
                 )}
                 {status === 'error' && (
                     <div className="status-error">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                         Verification failed
                     </div>
                 )}
                 {(status === 'idle' || status === 'processing') && (
                     <button type="submit" className="btn-primary btn-verify" disabled={loading || !contract || !escrowId || !actual || !conf}>
-                        {loading
-                            ? <><div className="spinner"/> Verifying...</>
-                            : <><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg> Verify and Release</>
-                        }
+                        {loading ? <><div className="spinner"/> Verifying...</> : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg> Verify and Release</>}
                     </button>
                 )}
-                {txHash && <div className="tx-pill">TX: {txHash.slice(0,22)}...{txHash.slice(-8)}</div>}
+                {txHash && (
+                    <div className="tx-pill" onClick={() => copy(txHash)} title="Copy TX hash">
+                        <span>TX: {txHash.slice(0,22)}...{txHash.slice(-6)}</span>
+                        <svg className="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{color:copied?'#34d399':'currentColor'}}>
+                            {copied ? <polyline points="20 6 9 17 4 12"/> : <><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></>}
+                        </svg>
+                    </div>
+                )}
             </form>
         </div>
     );
 }
 
-/* ── Transaction Log ── */
+/* ── Tx Log ── */
 function TxLog({ logs }) {
     return (
         <div className="card">
             <div className="card-head">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                </svg>
-                Transaction Log
+                <div className="card-head-left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Transaction Log
+                </div>
             </div>
             <div className="log-box">
                 {logs.length === 0
                     ? <div className="log-empty">No transactions yet.</div>
-                    : logs.map((l, i) => (
+                    : logs.map((l,i) => (
                         <div key={i} className="log-item">
                             <span className="log-t">[{l.time}]</span>
-                            <span className={`log-m${l.success ? ' success' : l.fail ? ' fail' : ''}`}>{l.message}</span>
-                            {l.txHash && <a href={`https://www.okx.com/web3/explorer/xlayer-testnet/tx/${l.txHash}`} target="_blank" rel="noopener noreferrer" className="log-link">View TX</a>}
+                            <span className={`log-m${l.success?' ok':l.fail?' fail':''}`}>{l.message}</span>
+                            {l.txHash && <a href={`https://www.okx.com/web3/explorer/xlayer-testnet/tx/${l.txHash}`} target="_blank" rel="noopener noreferrer" className="log-link">↗ TX</a>}
                         </div>
                     ))
                 }
@@ -812,30 +917,50 @@ function TxLog({ logs }) {
 /* ── App ── */
 function App() {
     const [contract, setContract]   = useState(null);
+    const [signer, setSigner]       = useState(null);
     const [address, setAddress]     = useState('');
     const [selectedAgent, setAgent] = useState(null);
     const [logs, setLogs]           = useState([]);
     const [toasts, setToasts]       = useState([]);
+    const [history, setHistory]     = useState([]);
+    const [network, setNetwork]     = useState('xlayer-test');
+    const [dark, setDark]           = useState(true);
+    const [agents, setAgents]       = useState([]);
+    const [loadingAgents, setLoadingAgents] = useState(true);
+    const [copied, copy]            = useCopy();
 
-    const addToast    = useCallback((msg, type) => { const id = Date.now(); setToasts(p => [...p, { id, msg, type }]); }, []);
+    // Apply theme
+    useEffect(() => {
+        document.body.classList.toggle('light', !dark);
+    }, [dark]);
+
+    const addToast    = useCallback((msg, type) => { const id = Date.now(); setToasts(p => [...p, {id,msg,type}]); }, []);
     const removeToast = useCallback(id => setToasts(p => p.filter(t => t.id !== id)), []);
     const addLog      = useCallback((message, txHash, success, fail) => {
         const time = new Date().toLocaleTimeString();
-        setLogs(p => [{ time, message, txHash, success, fail }, ...p].slice(0, 25));
+        setLogs(p => [{time,message,txHash,success,fail}, ...p].slice(0,25));
     }, []);
 
     const connectWallet = async () => {
         try {
             const prov = window.okxwallet || window.ethereum;
             if (!prov) { addToast('No wallet found. Install OKX Wallet or MetaMask.', 'error'); return; }
-            await prov.request({ method: 'eth_requestAccounts' });
+            await prov.request({ method:'eth_requestAccounts' });
             const ep = new ethers.BrowserProvider(prov);
-            const signer = await ep.getSigner();
-            const addr = await signer.getAddress();
-            setContract(new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer));
+            const s = await ep.getSigner();
+            const addr = await s.getAddress();
+            const c = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, s);
+            setSigner(s);
+            setContract(c);
             setAddress(addr);
             addLog(`Wallet connected: ${addr}`);
             addToast('Wallet connected!', 'success');
+            
+            // Fetch agents from registry
+            setLoadingAgents(true);
+            const fetchedAgents = await fetchAgentsFromRegistry(s);
+            setAgents(fetchedAgents);
+            setLoadingAgents(false);
         } catch (err) {
             addToast(err.message || 'Failed to connect', 'error');
             addLog(`Connection failed: ${err.message}`, null, false, true);
@@ -843,30 +968,33 @@ function App() {
     };
 
     const disconnectWallet = () => {
-        setContract(null); setAddress('');
+        setContract(null); setSigner(null); setAddress(''); setAgents([]);
         addLog('Wallet disconnected');
         addToast('Wallet disconnected', 'success');
     };
 
+    const handleEscrowSuccess = useCallback((record) => {
+        setHistory(p => [record, ...p]);
+    }, []);
+
+    const handleRelease = useCallback((id, txHash) => {
+        setHistory(p => p.map(h => h.id === id ? {...h, status:'released', txHash} : h));
+    }, []);
+
+    const currentNet = NETWORKS.find(n => n.id === network) || NETWORKS[0];
+
     return (
         <>
-            {/* ── Splash screen ── */}
+            {/* Splash */}
             <div className="splash">
                 <div className="splash-aurora"></div>
-                <div className="splash-blob-1"></div>
-                <div className="splash-blob-2"></div>
-                <div className="splash-blob-3"></div>
-                <div className="splash-mask-bg"></div>
-                <div className="splash-dots"></div>
+                <div className="splash-blob-1"></div><div className="splash-blob-2"></div><div className="splash-blob-3"></div>
+                <div className="splash-mask"></div><div className="splash-dots"></div>
                 <div className="splash-content">
                     <div className="splash-logo">
                         <div className="splash-badge">
                             <svg width="48" height="48" viewBox="0 0 34 34" fill="none">
-                                <defs>
-                                    <linearGradient id="splg" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-                                        <stop stopColor="#22d3ee"/><stop offset="1" stopColor="#3b82f6"/>
-                                    </linearGradient>
-                                </defs>
+                                <defs><linearGradient id="splg" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop stopColor="#22d3ee"/><stop offset="1" stopColor="#3b82f6"/></linearGradient></defs>
                                 <path d="M17 2L4 7.5V17c0 6.6 5.6 12.8 13 14.5C24.4 29.8 30 23.6 30 17V7.5L17 2z" fill="url(#splg)" fillOpacity="0.22" stroke="url(#splg)" strokeWidth="1.4" strokeLinejoin="round"/>
                                 <circle cx="17" cy="17" r="2.5" fill="#22d3ee"/>
                                 <line x1="17" y1="10.5" x2="17" y2="14.5" stroke="#22d3ee" strokeWidth="1.4" strokeLinecap="round"/>
@@ -882,30 +1010,24 @@ function App() {
                 </div>
             </div>
 
-            {/* ── Main aurora background ── */}
+            {/* Aurora */}
             <div className="aurora">
-                <div className="aurora-blob"></div>
-                <div className="aurora-blob"></div>
-                <div className="aurora-blob"></div>
-                <div className="aurora-strip"></div>
-                <div className="aurora-mask"></div>
+                <div className="aurora-blob"></div><div className="aurora-blob"></div><div className="aurora-blob"></div>
+                <div className="aurora-strip"></div><div className="aurora-mask"></div>
             </div>
 
+            {/* Toasts */}
             <div className="toasts">
                 {toasts.map(t => <Toast key={t.id} message={t.msg} type={t.type} onClose={() => removeToast(t.id)} />)}
             </div>
 
             <div className="app">
-                {/* Header */}
-                <header className="header">
+                {/* Top bar */}
+                <div className="topbar">
                     <div className="logo-row">
                         <div className="logo-badge">
-                            <svg width="30" height="30" viewBox="0 0 34 34" fill="none">
-                                <defs>
-                                    <linearGradient id="lg" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-                                        <stop stopColor="#22d3ee"/><stop offset="1" stopColor="#3b82f6"/>
-                                    </linearGradient>
-                                </defs>
+                            <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+                                <defs><linearGradient id="lg" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop stopColor="#22d3ee"/><stop offset="1" stopColor="#3b82f6"/></linearGradient></defs>
                                 <path d="M17 2L4 7.5V17c0 6.6 5.6 12.8 13 14.5C24.4 29.8 30 23.6 30 17V7.5L17 2z" fill="url(#lg)" fillOpacity="0.2" stroke="url(#lg)" strokeWidth="1.4" strokeLinejoin="round"/>
                                 <circle cx="17" cy="17" r="2.5" fill="#22d3ee"/>
                                 <line x1="17" y1="10.5" x2="17" y2="14.5" stroke="#22d3ee" strokeWidth="1.4" strokeLinecap="round"/>
@@ -914,28 +1036,30 @@ function App() {
                                 <line x1="19.5" y1="17" x2="23.5" y2="17" stroke="#22d3ee" strokeWidth="1.4" strokeLinecap="round"/>
                             </svg>
                         </div>
-                        <h1>ProofPayX</h1>
+                        <div>
+                            <h1>ProofPayX</h1>
+                            <div className="tagline">Stripe for AI agents — but <em>trustless</em></div>
+                        </div>
                     </div>
-                    <p className="tagline">Stripe for AI agents — but <em>trustless</em></p>
-                </header>
+                    <div className="topbar-right">
+                        <NetSwitcher network={network} setNetwork={setNetwork} />
+                        <ThemeBtn dark={dark} toggle={() => setDark(d => !d)} />
+                    </div>
+                </div>
 
-                {/* Wallet */}
+                {/* Wallet bar */}
                 <div className="wallet-bar">
                     {address ? (
                         <div className="wallet-info">
-                            <div className="wallet-pill">
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <CopyBtn text={address} className="wallet-pill">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                                 {address.slice(0,6)}...{address.slice(-4)}
-                            </div>
+                            </CopyBtn>
                             <button className="btn-disconnect" onClick={disconnectWallet}>Disconnect</button>
                         </div>
                     ) : (
                         <button className="btn-wallet" onClick={connectWallet}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/>
-                                <path d="M20 12v4H6a2 2 0 0 0-2 2c0 1.1.9 2 2 2h12v-4"/>
-                                <path d="M20 12h-4"/>
-                            </svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M20 12v4H6a2 2 0 0 0-2 2c0 1.1.9 2 2 2h12v-4"/><path d="M20 12h-4"/></svg>
                             Connect OKX Wallet
                         </button>
                     )}
@@ -947,33 +1071,39 @@ function App() {
                         {/* Agents */}
                         <div className="card">
                             <div className="card-head">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                                </svg>
-                                Available Agents
+                                <div className="card-head-left">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    Available Agents
+                                </div>
+                                <span style={{fontSize:'0.65rem',color:'var(--text-3)'}}>{loadingAgents ? 'Loading...' : `${agents.length} agents on-chain`}</span>
                             </div>
                             <div className="agent-grid">
-                                {AGENTS.map(a => (
-                                    <AgentTile
-                                        key={a.name} agent={a}
-                                        isSelected={selectedAgent?.name === a.name}
-                                        onClick={() => { setAgent(a); addLog(`Selected agent: ${a.name}`); }}
-                                    />
-                                ))}
+                                {loadingAgents ? (
+                                    <div style={{textAlign:'center',padding:'1rem',color:'var(--text-3)'}}>Loading agents from blockchain...</div>
+                                ) : agents.length === 0 ? (
+                                    <div style={{textAlign:'center',padding:'1rem',color:'var(--text-3)'}}>No agents registered yet.</div>
+                                ) : (
+                                    agents.map(a => (
+                                        <AgentTile key={a.address} agent={a}
+                                            isSelected={selectedAgent?.address === a.address}
+                                            onClick={() => { setAgent(a); addLog(`Selected agent: ${a.name}`); }}
+                                        />
+                                    ))
+                                )}
                             </div>
                         </div>
-
-                        <EscrowForm contract={contract} onSuccess={() => {}} onLog={addLog} selectedAgent={selectedAgent} addToast={addToast} />
+                        <EscrowForm contract={contract} onSuccess={handleEscrowSuccess} onLog={addLog} selectedAgent={selectedAgent} addToast={addToast} />
+                        <EscrowHistory history={history} network={network} />
                     </div>
 
                     <div className="col">
-                        <VerifyForm contract={contract} onLog={addLog} addToast={addToast} />
+                        <VerifyForm contract={contract} onLog={addLog} addToast={addToast} onRelease={handleRelease} />
                         <TxLog logs={logs} />
                     </div>
                 </div>
 
                 <div className="footer">
-                    X Layer Testnet · Contract: {CONTRACT_ADDRESS.slice(0,6)}...{CONTRACT_ADDRESS.slice(-4)}
+                    {currentNet.name} · Contract: <CopyBtn text={CONTRACT_ADDRESS}>{CONTRACT_ADDRESS.slice(0,6)}...{CONTRACT_ADDRESS.slice(-4)}</CopyBtn> · Agent Registry: <CopyBtn text={REGISTRY_ADDRESS}>{REGISTRY_ADDRESS.slice(0,6)}...{REGISTRY_ADDRESS.slice(-4)}</CopyBtn>
                 </div>
             </div>
         </>
