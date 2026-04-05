@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProofPayX - Trustless AI Payments</title>
+    <title>ProofPayX - Stripe for AI agents — but trustless</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -13,23 +13,19 @@
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            /* Playza-style dark cyberpunk palette */
             --void-black: #050508;
             --void-dark: #0A0A0F;
             --void-card: #111118;
             --void-border: rgba(255,255,255,0.06);
-            
             --neon-cyan: #00D4FF;
             --neon-blue: #4D9FFF;
             --neon-purple: #A855F7;
             --neon-green: #10B981;
             --neon-amber: #F59E0B;
             --neon-red: #EF4444;
-            
             --text-primary: #FFFFFF;
             --text-secondary: rgba(255,255,255,0.7);
             --text-muted: rgba(255,255,255,0.4);
-            
             --gradient-primary: linear-gradient(135deg, #00D4FF 0%, #4D9FFF 100%);
             --gradient-success: linear-gradient(135deg, #10B981 0%, #00D4FF 100%);
             --gradient-glow: radial-gradient(ellipse at center, rgba(0,212,255,0.15) 0%, transparent 70%);
@@ -46,7 +42,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── Aurora Background ── */
         .aurora {
             position: fixed;
             inset: 0;
@@ -105,7 +100,6 @@
             75% { transform: translate(40px, 10px) scale(1.02); }
         }
 
-        /* ── Grid Overlay ── */
         .grid-overlay {
             position: fixed;
             inset: 0;
@@ -118,7 +112,6 @@
             mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
         }
 
-        /* ── Splash Screen ── */
         .splash {
             position: fixed;
             inset: 0;
@@ -199,7 +192,6 @@
             } 
         }
 
-        /* ── App Container ── */
         .app {
             position: relative;
             z-index: 10;
@@ -215,7 +207,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Navigation ── */
         .nav {
             display: flex;
             align-items: center;
@@ -269,7 +260,6 @@
             gap: 0.75rem;
         }
 
-        /* ── Buttons ── */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -347,7 +337,6 @@
             transform: none !important;
         }
 
-        /* ── Stats Bar ── */
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -420,7 +409,6 @@
             letter-spacing: 0.08em;
         }
 
-        /* ── Main Grid ── */
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -437,7 +425,6 @@
             gap: 1.5rem;
         }
 
-        /* ── Cards ── */
         .card {
             background: var(--void-card);
             border: 1px solid var(--void-border);
@@ -501,7 +488,6 @@
             z-index: 1;
         }
 
-        /* ── Agent Grid ── */
         .agent-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -639,7 +625,6 @@
 
         .agent-addr:hover { color: var(--neon-cyan); }
 
-        /* ── Forms ── */
         .form-group {
             margin-bottom: 1rem;
         }
@@ -689,7 +674,6 @@
             .form-row { grid-template-columns: 1fr; }
         }
 
-        /* ── Payout Preview ── */
         .payout-preview {
             background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(77,159,255,0.05));
             border: 1px solid rgba(0,212,255,0.15);
@@ -769,7 +753,6 @@
             border-top: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* ── Success State ── */
         .success-state {
             background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(0,212,255,0.05));
             border: 1px solid rgba(16,185,129,0.3);
@@ -814,7 +797,6 @@
             color: var(--text-secondary);
         }
 
-        /* ── Error State ── */
         .error-state {
             background: rgba(239,68,68,0.08);
             border: 1px solid rgba(239,68,68,0.3);
@@ -827,7 +809,6 @@
             font-size: 0.85rem;
         }
 
-        /* ── TX Pill ── */
         .tx-pill {
             display: flex;
             align-items: center;
@@ -849,7 +830,6 @@
             color: var(--neon-cyan);
         }
 
-        /* ── History List ── */
         .history-list {
             display: flex;
             flex-direction: column;
@@ -961,7 +941,6 @@
             color: var(--neon-cyan);
         }
 
-        /* ── Log Box ── */
         .log-box {
             max-height: 200px;
             overflow-y: auto;
@@ -1024,7 +1003,6 @@
             font-size: 0.85rem;
         }
 
-        /* ── Network Selector ── */
         .net-select {
             position: relative;
         }
@@ -1101,7 +1079,6 @@
             background: rgba(0,212,255,0.08);
         }
 
-        /* ── Toast Notifications ── */
         .toasts {
             position: fixed;
             top: 1.5rem;
@@ -1147,7 +1124,6 @@
             color: var(--text-primary);
         }
 
-        /* ── Footer ── */
         .footer {
             margin-top: 3rem;
             padding: 2rem;
@@ -1181,7 +1157,6 @@
             text-decoration: underline;
         }
 
-        /* ── Loading Spinner ── */
         .spinner {
             width: 16px;
             height: 16px;
@@ -1193,7 +1168,6 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ── Skeleton Loading ── */
         .skeleton {
             background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
             background-size: 200% 100%;
@@ -1206,7 +1180,6 @@
             100% { background-position: -200% 0; }
         }
 
-        /* ── Copy Button ── */
         .copy-btn {
             cursor: pointer;
             display: inline-flex;
@@ -1219,7 +1192,6 @@
             color: var(--neon-cyan);
         }
 
-        /* ── Mobile Responsive ── */
         @media (max-width: 768px) {
             .app { padding: 1rem; }
             .nav { flex-direction: column; gap: 1rem; padding: 1rem; }
@@ -1255,13 +1227,6 @@ const NETWORKS = [
     { id: 'bnb-test', name: 'BNB Testnet', color: '#F59E0B', explorer: 'https://testnet.bscscan.com/tx/' },
 ];
 
-const FALLBACK_AGENTS = [
-    { name: "ETH Predictor", price: "0.01", symbol: "OKB", address: "0x04b772f0cf69f45956061100d14bc5417b9ba3eb", reputation: 4.8, confidence: 91, placeholder: 'e.g. ETH price prediction: 3500', Icon: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> },
-    { name: "Sentiment AI", price: "0.005", symbol: "OKB", address: "0x04b772f0cf69f45956061100d14bc5417b9ba3eb", reputation: 4.5, confidence: 83, placeholder: 'e.g. Market sentiment: BULLISH (0.78)', Icon: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> },
-    { name: "Code Auditor", price: "0.02", symbol: "OKB", address: "0x04b772f0cf69f45956061100d14bc5417b9ba3eb", reputation: 4.9, confidence: 96, placeholder: 'e.g. Audit result: PASS — 0 criticals', Icon: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> },
-];
-
-// ── Hooks ──
 function useCopy(timeout = 1600) {
     const [copied, setCopied] = useState(false);
     const timerRef = useRef(null);
@@ -1276,7 +1241,6 @@ function useCopy(timeout = 1600) {
     return [copied, copy];
 }
 
-// ── Components ──
 const CopyBtn = memo(function CopyBtn({ text, children, className = '', style = {} }) {
     const [copied, copy] = useCopy();
     return (
@@ -1335,7 +1299,7 @@ function Splash() {
                     </svg>
                 </div>
                 <div className="splash-title">ProofPayX</div>
-                <div className="splash-subtitle">Trustless AI Payments on X Layer</div>
+                <div className="splash-subtitle">Stripe for AI agents — but trustless</div>
                 <div className="splash-bar"><div className="splash-fill"/></div>
             </div>
         </div>
@@ -1490,7 +1454,7 @@ const AgentCard = memo(function AgentCard({ agent, isSelected, onClick }) {
         <div className={`agent-card ${isSelected ? 'active' : ''}`} onClick={onClick}>
             <div className="agent-icon"><agent.Icon/></div>
             <div className="agent-name">{agent.name}</div>
-            <div className="agent-price">{agent.price} {agent.symbol}</div>
+            <div className="agent-price">{agent.price} OKB</div>
             <div className="agent-stats">
                 <div className="stat-row">
                     <span className="stat-row-label">Rep</span>
@@ -1501,7 +1465,7 @@ const AgentCard = memo(function AgentCard({ agent, isSelected, onClick }) {
                     <div className="conf-bar"><div className="conf-bar-fill" style={{ width: `${agent.confidence}%` }}/></div>
                 </div>
             </div>
-            <CopyBtn text={agent.address} className="agent-addr">{agent.address.slice(0, 10)}...{agent.address.slice(-6)}</CopyBtn>
+            <CopyBtn text={agent.address} className="agent-addr">{agent.address.slice(0, 8)}...{agent.address.slice(-6)}</CopyBtn>
         </div>
     );
 });
@@ -1770,7 +1734,6 @@ function VerifyForm({ contract, onLog, addToast, onRelease }) {
     );
 }
 
-// ── Main App ──
 function App() {
     const [contract, setContract] = useState(null);
     const [address, setAddress] = useState('');
@@ -1779,8 +1742,8 @@ function App() {
     const [toasts, setToasts] = useState([]);
     const [history, setHistory] = useState([]);
     const [network, setNetwork] = useState('xlayer-test');
-    const [agents, setAgents] = useState(FALLBACK_AGENTS);
-    const [loadingAgents, setLoading] = useState(false);
+    const [agents, setAgents] = useState([]);
+    const [loadingAgents, setLoading] = useState(true);
 
     const addToast = useCallback((msg, type) => { const id = Date.now(); setToasts(p => [...p, { id, msg, type }]); }, []);
     const removeToast = useCallback(id => setToasts(p => p.filter(t => t.id !== id)), []);
@@ -1821,7 +1784,7 @@ function App() {
                         Icon: getIcon(a.name),
                     })));
                 }
-            } catch { /* keep fallback */ }
+            } catch (err) { console.error("Registry fetch failed:", err); }
             setLoading(false);
         } catch (err) {
             addToast(err.message || 'Failed to connect', 'error');
@@ -1831,7 +1794,7 @@ function App() {
 
     const disconnectWallet = () => {
         setContract(null); setAddress('');
-        setAgents(FALLBACK_AGENTS);
+        setAgents([]);
         addLog('Wallet disconnected');
         addToast('Wallet disconnected', 'success');
     };
@@ -1853,7 +1816,6 @@ function App() {
                 {toasts.map(t => <Toast key={t.id} message={t.msg} type={t.type} onClose={() => removeToast(t.id)}/>)}
             </div>
             <div className="app">
-                {/* Navigation */}
                 <nav className="nav">
                     <div className="nav-brand">
                         <div className="nav-logo">
@@ -1868,7 +1830,7 @@ function App() {
                         </div>
                         <div>
                             <div className="nav-title">ProofPayX</div>
-                            <div className="nav-tagline">Trustless AI Payments</div>
+                            <div className="nav-tagline">Stripe for AI agents — but trustless</div>
                         </div>
                     </div>
                     <div className="nav-actions">
@@ -1890,13 +1852,10 @@ function App() {
                     </div>
                 </nav>
 
-                {/* Stats Bar */}
                 <StatsBar txCount={history.length}/>
 
-                {/* Main Grid */}
                 <div className="main-grid">
                     <div className="col">
-                        {/* Agent Selection */}
                         <div className="card">
                             <div className="card-header">
                                 <div className="card-title">
@@ -1908,33 +1867,29 @@ function App() {
                             <div className="agent-grid">
                                 {loadingAgents
                                     ? [1, 2, 3].map(i => <AgentSkeleton key={i}/>)
-                                    : agents.map(a => (
-                                        <AgentCard key={a.address + a.name} agent={a}
-                                            isSelected={selectedAgent?.address === a.address && selectedAgent?.name === a.name}
-                                            onClick={() => { setAgent(a); addLog(`Selected agent: ${a.name}`); }}
-                                        />
-                                    ))
+                                    : agents.length === 0
+                                        ? <div style={{ textAlign: 'center', padding: '1rem', color: 'var(--text-muted)' }}>No agents registered yet. Connect wallet to load.</div>
+                                        : agents.map(a => (
+                                            <AgentCard key={a.address} agent={a}
+                                                isSelected={selectedAgent?.address === a.address}
+                                                onClick={() => { setAgent(a); addLog(`Selected agent: ${a.name}`); }}
+                                            />
+                                        ))
                                 }
                             </div>
                         </div>
 
-                        {/* Create Escrow */}
                         <EscrowForm contract={contract} onSuccess={handleEscrowSuccess} onLog={addLog} selectedAgent={selectedAgent} addToast={addToast}/>
 
-                        {/* Escrow History */}
                         <EscrowHistory history={history} network={network}/>
                     </div>
 
                     <div className="col">
-                        {/* Verify Form */}
                         <VerifyForm contract={contract} onLog={addLog} addToast={addToast} onRelease={handleRelease}/>
-
-                        {/* Transaction Log */}
                         <TxLog logs={logs}/>
                     </div>
                 </div>
 
-                {/* Footer */}
                 <footer className="footer">
                     <div className="footer-content">
                         <span>{curNet.name}</span>
