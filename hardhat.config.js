@@ -5,7 +5,7 @@ module.exports = {
   solidity: "0.8.19",
   networks: {
     xlayer_testnet: {
-      url: "https://testrpc.xlayer.tech",
+      url: "https://testrpc.xlayer.tech/terigon",
       accounts: [process.env.PRIVATE_KEY],
       chainId: 1952,
     },

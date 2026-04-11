@@ -1,18 +1,14 @@
 const { ethers } = require("ethers");
 const fs = require("fs");
-require("dotenv").config();
 
-const RPC_URL = "https://rpc.xlayer.tech";   // mainnet RPC
+const RPC_URL = "https://testrpc.xlayer.tech/terigon";
 const provider = new ethers.JsonRpcProvider(RPC_URL);
-const privateKey = process.env.PRIVATE_KEY;
-if (!privateKey) {
-  console.error("❌ PRIVATE_KEY not set in .env");
-  process.exit(1);
-}
+// Replace with your private key (the one that has testnet OKB)
+const privateKey = "0x4861553974ad6c4099c9b92f1a55051d9db75415fe3dfb70806b0adeeb8ee270";
 const wallet = new ethers.Wallet(privateKey, provider);
 
 async function main() {
-  console.log("Deploying to X Layer MAINNET...");
+  console.log("Deploying ProofPayXAdvanced...");
   const artifactPath = "./artifacts/contracts/ProofPayXAdvanced.sol/ProofPayXAdvanced.json";
   if (!fs.existsSync(artifactPath)) {
     console.error("❌ Contract not compiled. Run: npx hardhat compile");
@@ -24,7 +20,7 @@ async function main() {
   const contract = await factory.deploy(resolverAddress);
   await contract.waitForDeployment();
   const address = await contract.getAddress();
-  console.log("✅ ProofPayXAdvanced deployed to MAINNET at:", address);
+  console.log("✅ ProofPayXAdvanced deployed to:", address);
 }
 
 main().catch(console.error);

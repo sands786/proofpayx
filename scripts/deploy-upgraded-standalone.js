@@ -2,18 +2,18 @@ const { ethers } = require("ethers");
 const fs = require("fs");
 require("dotenv").config();
 
-const RPC_URL = "https://rpc.xlayer.tech";   // mainnet RPC
+const RPC_URL = "https://testrpc.xlayer.tech/terigon";
 const provider = new ethers.JsonRpcProvider(RPC_URL);
 const privateKey = process.env.PRIVATE_KEY;
 if (!privateKey) {
-  console.error("❌ PRIVATE_KEY not set in .env");
+  console.error("❌ Missing PRIVATE_KEY in .env");
   process.exit(1);
 }
 const wallet = new ethers.Wallet(privateKey, provider);
 
 async function main() {
-  console.log("Deploying to X Layer MAINNET...");
-  const artifactPath = "./artifacts/contracts/ProofPayXAdvanced.sol/ProofPayXAdvanced.json";
+  console.log("Deploying ProofPayXUpgraded...");
+  const artifactPath = "./artifacts/contracts/ProofPayXUpgraded.sol/ProofPayXUpgraded.json";
   if (!fs.existsSync(artifactPath)) {
     console.error("❌ Contract not compiled. Run: npx hardhat compile");
     process.exit(1);
@@ -24,7 +24,7 @@ async function main() {
   const contract = await factory.deploy(resolverAddress);
   await contract.waitForDeployment();
   const address = await contract.getAddress();
-  console.log("✅ ProofPayXAdvanced deployed to MAINNET at:", address);
+  console.log("✅ ProofPayXUpgraded deployed to:", address);
 }
 
 main().catch(console.error);
