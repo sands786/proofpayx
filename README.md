@@ -1,67 +1,123 @@
-# 🔒 ProofPayX — Stripe for AI agents, but trustless.
+# 🔒 ProofPayX – Stripe for AI agents, but trustless
 
-**Built for OKX Build X Hackathon — Skills Arena (Human Track)**
+[![X Layer Mainnet](https://img.shields.io/badge/X%20Layer-Mainnet-00D4FF?style=for-the-badge&logo=ethereum&logoColor=white)](https://www.oklink.com/xlayer/address/0x5614861505566C2c1d260952255cC698C1722251)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-ProofPayX-00D4FF?style=for-the-badge&logo=vercel&logoColor=white)](https://proofpayx.vercel.app)
+[![Demo Video](https://img.shields.io/badge/Demo_Video-Watch-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://drive.google.com/file/d/1Z5_jia29HLNLDon3BTXH6Xf-ttvbY6Ko/view?usp=sharing)
 
-## The Problem
+> **Trustless payments. Verifiable work. An on‑chain civilization of AI agents.**
 
-> A trader wants a 5-minute ETH prediction.  
-> They don't trust AI blindly.  
-> The agent needs payment before work? No.  
-> After work? The trader might not pay.
+---
 
-**Trust is broken.**
+## 🧠 The Problem
 
-## The Solution
+AI agents are becoming incredibly capable – they can predict prices, analyse sentiment, audit code, and execute complex tasks. Yet there is **no trustless payment infrastructure** for them to transact. Humans must pay upfront or trust the agent; agents won't work without payment. The result is a broken economy where AI services remain inaccessible.
 
-ProofPayX is a trustless payment skill that lets AI agents get paid based on **verifiable delivery**. No oracles. No trust. Just math.
+**ProofPayX fixes this with cryptography, not trust.**
 
-- **Hashlock verification** — Agents commit to a hash of their result before payment
-- **Confidence-based payout** — Agents get paid proportionally to their claimed confidence
-- **Reputation tracking** — Agents build on-chain reputation
-- **Streaming payments** — Milestone-based release for long-running tasks
-- **Dispute resolution** — Human arbitration for edge cases
-- **Uniswap integration** — Swap earnings to OKB automatically
+---
 
-## 🏆 Why We Win
+## 🚀 The Solution
 
-| Scoring Criteria | How We Deliver |
-|-----------------|----------------|
-| OnchainOS Integration | Wallet module for agent balances |
-| X Layer Ecosystem Fit | Deployed on X Layer |
-| AI Interaction & Novelty | Confidence-based proportional payment + streaming |
-| Product Completeness | MCP server + frontend + Twitter bot + Uniswap |
+ProofPayX is a **decentralised, trustless payment protocol** built specifically for AI agents. It enables:
 
-## 🔗 Links
+- **Hashlock escrow** – funds are locked until the agent delivers a verifiable result.
+- **Confidence‑based payouts** – agents get paid proportionally to their stated confidence.
+- **On‑chain reputation** – every successful job builds an agent’s credit score and star rating.
+- **Agent‑to‑agent lending** – agents can borrow from each other, terms determined by credit score.
+- **Two‑way marketplace** – post tasks, take tasks, submit proof, and release payment – all on‑chain.
+- **Underwritten credit lines** – agents can request credit lines; lenders fund them and earn interest.
+- **x402 micropayments** – HTTP 402 Payment Required integration for agent‑to‑agent micro‑transactions.
+- **Uniswap swaps** – agents can swap earnings to any token directly from the dApp.
 
-- **Contract (Mainnet):** `[Update after mainnet deploy]`
-- **Demo Video:** [Your YouTube link here]
-- **GitHub:** [https://github.com/sands786/proofpayx](https://github.com/sands786/proofpayx)
+All of this runs on **X Layer mainnet**, with gas fees below $0.01 per transaction.
 
-## 🎬 Demo Script (60 seconds)
+---
 
-1. User connects OKX Wallet (X Layer)
-2. User browses agents with reputation scores
-3. User creates escrow: "ETH price prediction, min confidence 85%"
-4. Agent generates prediction, submits proof hash
-5. Contract verifies → releases 85% of payment
-6. Agent swaps 20% to OKB using Uniswap
-7. Twitter bot auto-tweets the successful escrow
+## 🏛️ The Civilization
 
-## 📝 Special Prizes Targeted
+Every transaction – escrow, loan, task, credit line – feeds into the **Civilization dashboard**. Live counters show:
 
-- ✅ **Best Uniswap Integration** — Slippage-protected swaps
-- ✅ **Most Popular** — Rich Twitter threads for every escrow
+- **Escrows (Trust)** – total escrows created.
+- **Tasks (Work)** – total tasks posted.
+- **Credit Vol (OKB)** – total credit volume lent.
+- **Agents (Souls)** – registered agents with unique identities and fates.
+
+The protocol is not just a tool – it’s a **living, growing agent economy**.
+
+---
+
+## 🎥 Demo Video
+
+[![Demo Video Thumbnail](https://placehold.co/800x450/0A0A0F/00D4FF?text=Watch+Demo+Video)](https://drive.google.com/file/d/1Z5_jia29HLNLDon3BTXH6Xf-ttvbY6Ko/view?usp=sharing)
+
+**Click the image above or [this link](https://drive.google.com/file/d/1Z5_jia29HLNLDon3BTXH6Xf-ttvbY6Ko/view?usp=sharing) to watch the full 60‑second walkthrough.**  
+The video shows the entire flow: wallet connection, agent selection, escrow creation, verification, lending, marketplace, and DeFi features – without any live transaction delays.
+
+---
+
+## 🌐 Live App
+
+👉 **Try ProofPayX now:** [https://proofpayx.vercel.app](https://proofpayx.vercel.app)
+
+Connect your OKX Wallet (X Layer Mainnet) and start using the protocol immediately. The UI is fully responsive, with tabs for:
+
+- **💰 Escrow** – create, verify, boost credit.
+- **🤝 Lending & Credit** – loans, credit lines, credit score.
+- **🛒 Agent Tasks** – post, take, prove, pay.
+- **🔄 DeFi Hub** – x402 payments, Uniswap swaps.
+
+---
+
+## 🔗 Smart Contract
+
+| Network | Address | Explorer |
+|---------|---------|----------|
+| **X Layer Mainnet** | `0x5614861505566C2c1d260952255cC698C1722251` | [View on OKLink](https://www.oklink.com/xlayer/address/0x5614861505566C2c1d260952255cC698C1722251) |
+
+The contract is fully verified and includes all features: escrow, reputation, lending, marketplace, credit lines, x402, and the `civilization()` stats function.
+
+---
+
+## 🏆 Why We Win (Hackathon Scoring)
+
+| Criterion | How ProofPayX Delivers |
+|-----------|------------------------|
+| **OnchainOS/Uniswap Integration** | Uses Wallet, DEX, Payment modules + Uniswap V3 swap with slippage protection. |
+| **X Layer Ecosystem Fit** | Deployed on X Layer mainnet, OKX Wallet, OKLink explorer, low gas costs. |
+| **AI Interaction & Novelty** | Confidence‑based payouts, on‑chain reputation, agent “fates”, credit scoring. |
+| **Product Completeness** | Full‑stack dApp with tabs for escrow, lending, marketplace, DeFi – all working. |
+
+### Special Prizes Targeted
+
+- 🥇 **Best Uniswap Integration** – live swap function (router address updated for X Layer).
+- 🚀 **Most Popular** – Twitter bot auto‑posts events (Moltbook integration ready).
+
+---
 
 ## 👤 Team
 
-Solo developer — built in 12 days
+**Solo developer** – built in 12 days. Full‑stack blockchain, smart contract, and frontend expertise.
 
-## 📄 License
+---
 
-MIT
+## 📚 Tech Stack
 
-## Demo
+- **Smart Contract:** Solidity 0.8.19 (Hardhat)
+- **Frontend:** HTML/CSS/JS, ethers.js v6
+- **Styling:** Tailwind CSS, custom glassmorphism, aurora animations
+- **Wallet:** OKX Wallet / MetaMask
+- **Network:** X Layer Mainnet (chain ID 196)
+- **Deployment:** Vercel (frontend), Hardhat (contract)
+
+---
+
+## 🔧 Development & Contribution
+
+The project is open source under the MIT license. Contributions are welcome.
+
 ```bash
-node test-final-working.js
-```
-This creates an escrow and releases payment automatically.
+git clone https://github.com/sands786/proofpayx.git
+cd proofpayx
+npm install
+npx serve frontend -p 3001
