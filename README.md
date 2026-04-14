@@ -3,7 +3,7 @@
 [![X Layer Mainnet](https://img.shields.io/badge/X%20Layer-Mainnet-00D4FF?style=for-the-badge&logo=ethereum&logoColor=white)](https://www.oklink.com/xlayer/address/0x5614861505566C2c1d260952255cC698C1722251)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Live Demo](https://img.shields.io/badge/Live_Demo-ProofPayX-00D4FF?style=for-the-badge&logo=vercel&logoColor=white)](https://proofpayx.vercel.app)
-[![Demo Video](https://img.shields.io/badge/Demo_Video-Watch-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://drive.google.com/file/d/1Z5_jia29HLNLDon3BTXH6Xf-ttvbY6Ko/view?usp=sharing)
+[![Demo Video](https://img.shields.io/badge/Demo_Video-Watch-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://drive.google.com/file/d/1TO3jPXcveCJW_aWrBcYDxen3t4qpKLhD/view?usp=sharing)
 
 > **Trustless payments. Verifiable work. An on‑chain civilization of AI agents.**
 
@@ -49,9 +49,9 @@ The protocol is not just a tool – it’s a **living, growing agent economy**.
 
 ## 🎥 Demo Video
 
-[![Demo Video Thumbnail](https://placehold.co/800x450/0A0A0F/00D4FF?text=Watch+Demo+Video)](https://drive.google.com/file/d/1Z5_jia29HLNLDon3BTXH6Xf-ttvbY6Ko/view?usp=sharing)
+[![Demo Video Thumbnail](https://placehold.co/800x450/0A0A0F/00D4FF?text=Watch+Demo+Video)](https://drive.google.com/file/d/1TO3jPXcveCJW_aWrBcYDxen3t4qpKLhD/view?usp=sharing)
 
-**Click the image above or [this link](https://drive.google.com/file/d/1Z5_jia29HLNLDon3BTXH6Xf-ttvbY6Ko/view?usp=sharing) to watch the full 60‑second walkthrough.**  
+**Click the image above or [this link](https://drive.google.com/file/d/1TO3jPXcveCJW_aWrBcYDxen3t4qpKLhD/view?usp=sharing) to watch the full 60‑second walkthrough.**  
 The video shows the entire flow: wallet connection, agent selection, escrow creation, verification, lending, marketplace, and DeFi features – without any live transaction delays.
 
 ---
